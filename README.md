@@ -3,7 +3,7 @@
 The OrgDev system for **Quinta Vale da Lama, Lda.** — a Holacracy-derived governance implementation.
 Notion holds the structure; this repo holds everything else.
 
-**Live org map:** https://ludwa6.github.io/vdl-orgdev/
+**Live org map:** https://valedalama.github.io/vdl-orgdev/
 
 ---
 

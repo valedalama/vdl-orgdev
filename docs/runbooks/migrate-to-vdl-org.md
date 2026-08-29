@@ -44,10 +44,16 @@ gh api -X POST repos/ludwa6/vdl-orgdev/transfer -f new_owner=<ORG>
 Then confirm Pages rebuilt at `https://<ORG>.github.io/vdl-orgdev/`, and that the daily
 `refresh-graph` workflow is still listed under Actions.
 
+⚠️ **GitHub redirects the repository, but not Pages.** `https://<old>.github.io/vdl-orgdev/` starts
+returning 404 the moment the transfer completes, while `github.com/<old>/vdl-orgdev` keeps
+redirecting. So step 4 is urgent rather than tidy-up: until it runs, every published link to the map
+is dead. Verified on the real transfer, 2026-08-29.
+
 ## 3. Re-set the Notion credential
 
-Assume repository secrets did **not** survive the transfer, and re-set regardless — it is harmless
-if they did. This is also the moment to stop sharing one credential between two purposes: the key in
+**Verified 2026-08-29 on the real transfer: repository secrets DO survive.** `NOTION_API_KEY`
+came through with its original timestamp intact, and the daily workflow kept running. So this step
+is not a repair — it is the moment to stop sharing one credential between two purposes: the key in
 use today belongs to an integration named for a desktop app, so rotating it for governance would
 silently break the other use.
 

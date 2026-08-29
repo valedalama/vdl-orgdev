@@ -27,7 +27,7 @@ portuguesa é a que conta.
 **O Manual completo** está em **[`handbook/pt/`](handbook/pt/)** — dez documentos, do 01 ao 10.
 A versão inglesa está em [`handbook/en/`](handbook/en/).
 
-**O mapa da organização** está em **https://ludwa6.github.io/vdl-orgdev/** — gerado a partir do
+**O mapa da organização** está em **https://valedalama.github.io/vdl-orgdev/** — gerado a partir do
 Notion. Leia primeiro o aviso na secção seguinte.
 
 ---
@@ -94,10 +94,10 @@ um defeito, e corrige-se. Está explicado no documento 04 e no documento 10.
 
 ## Perguntas, dúvidas, discordâncias
 
-**[Discussions](https://github.com/ludwa6/vdl-orgdev/discussions)** — para perguntas e conversas
+**[Discussions](https://github.com/valedalama/vdl-orgdev/discussions)** — para perguntas e conversas
 abertas. Não é preciso ter a certeza de nada para abrir uma.
 
-**[Issues](https://github.com/ludwa6/vdl-orgdev/issues)** — para coisas concretas que estão erradas
+**[Issues](https://github.com/valedalama/vdl-orgdev/issues)** — para coisas concretas que estão erradas
 ou em falta e alguém tem de resolver.
 
 Se não tem a certeza de qual usar, use Discussions. É mais fácil mover uma conversa do que
