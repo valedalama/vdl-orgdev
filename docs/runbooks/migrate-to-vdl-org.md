@@ -8,48 +8,53 @@ ownership without moving the architecture, which is already right.
 Reasoning and the alternatives considered are in the vault note *vdl-orgdev Enterprise Deployment —
 Moving Ownership off Walt (2026-08-29)*. This file is the procedure.
 
-**Steps 1, 3 and 5 need a person signed in. Nothing in them can be done by a script or an API key.**
+> **Steps 1, 2 and 4 are done — 29 August 2026.** The repository now lives at
+> `valedalama/vdl-orgdev` and the map at <https://valedalama.github.io/vdl-orgdev/>. What each step
+> actually taught is recorded below, because the next repository to move will hit the same things.
+> **Steps 0, 3 and 5 remain open**, and all three need a person signed in.
 
 ---
 
-## 0. Decide the people question first
+## 0. The people question — STILL OPEN
 
-`graph.json` published to Pages carries the first names of everyone in the organisation, and
-[issue #2](https://github.com/ludwa6/vdl-orgdev/issues/2) will add roles on top — which is a public
-description of who holds what authority. Three options, and **the plan for the organisation depends
-on which one is chosen**:
+`graph.json` published to Pages carries the first name of everyone in the organisation, and
+[issue #2](https://github.com/valedalama/vdl-orgdev/issues/2) will add roles on top — a public
+description of who holds what authority.
 
 | | Means | Cost |
 |---|---|---|
 | stay public | nothing changes | the staff map is world-readable, permanently |
 | split | structure public, people private | two repos; contradicts the one-repo decision |
-| private | Pages served to organisation members only | needs a paid GitHub plan |
+| private | Pages served to organisation members only | the organisation is on the **Free** plan, and Pages from a private repository needs a paid one |
 
-Decide this before step 1. Changing it afterwards means re-creating the organisation.
+**Correction to an earlier draft of this runbook**, which said deciding late would mean re-creating
+the organisation. It would not: an organisation's plan is a billing setting that can be changed at
+any time without touching its identity, its repositories or its URLs. Deciding late costs a plan
+change, not a migration. The decision is still worth making deliberately — it just is not a trap.
 
-## 1. Create the organisation
+## 1. The organisation — DONE
 
-Names confirmed free on 2026-08-29: `vale-da-lama`, `quintavaledalama`, `vdl-governance`.
-`valedalama` is taken. Precedent: `barlavento-eco`, which holds a domain in trust for its community.
+`valedalama` already existed, created 2020-02-05, with Walt as sole member and admin. It holds nine
+repositories, most of them dormant since 2018–2024.
 
-## 2. Transfer the repository
+**A caution for the next time this check is run:** querying `api.github.com/users/<name>` returns
+200 for an organisation as readily as for a person, so a name you already own reads as "taken". Ask
+whether the account is *yours* before concluding you need a different name.
 
-Do this **before inviting anyone**. Transferring with collaborators attached is messier, and the
-Pages URL then changes once rather than twice.
+## 2. Transfer the repository — DONE
 
 ```sh
-gh api -X POST repos/ludwa6/vdl-orgdev/transfer -f new_owner=<ORG>
+gh api -X POST repos/ludwa6/vdl-orgdev/transfer -f new_owner=valedalama
 ```
 
-Then confirm Pages rebuilt at `https://<ORG>.github.io/vdl-orgdev/`, and that the daily
-`refresh-graph` workflow is still listed under Actions.
+Completed in under six seconds, carrying issues, the open pull request, Pages, both workflows and
+the repository secret. `github.com/ludwa6/vdl-orgdev` still redirects.
 
-⚠️ **GitHub redirects the repository, but not Pages.** `https://<old>.github.io/vdl-orgdev/` starts
-returning 404 the moment the transfer completes, while `github.com/<old>/vdl-orgdev` keeps
-redirecting. So step 4 is urgent rather than tidy-up: until it runs, every published link to the map
-is dead. Verified on the real transfer, 2026-08-29.
+⚠️ **GitHub redirects the repository, but not Pages.** `https://ludwa6.github.io/vdl-orgdev/` began
+returning 404 the moment the transfer completed. So step 4 is urgent rather than tidy-up: until it
+runs, every published link to the map is dead.
 
-## 3. Re-set the Notion credential
+## 3. Re-set the Notion credential — OPEN
 
 **Verified 2026-08-29 on the real transfer: repository secrets DO survive.** `NOTION_API_KEY`
 came through with its original timestamp intact, and the daily workflow kept running. So this step
@@ -64,22 +69,21 @@ silently break the other use.
 3. `gh workflow run refresh-graph.yml --repo <ORG>/vdl-orgdev` — wait for green.
 4. Only then revoke the old key.
 
-## 4. Repoint everything
+## 4. Repoint everything — DONE
 
 ```sh
-./scripts/repoint-namespace.sh <ORG>            # dry run
-./scripts/repoint-namespace.sh <ORG> --write
-git remote set-url origin git@github.com:<ORG>/vdl-orgdev.git
+./scripts/repoint-namespace.sh valedalama --write
+git remote set-url origin git@github.com:valedalama/vdl-orgdev.git
 ```
 
-The script covers this repo and the OrgMap Lab schemas next door. It deliberately leaves the vault
-alone: dated notes are a record of what was true on the day, and rewriting them falsifies the
-record. The living notes are repointed by hand, and the migration plan names which.
+11 references across 6 files — this repository and the OrgMap Lab schemas next door. The script
+deliberately leaves the vault alone: dated notes record what was true on the day, and rewriting them
+falsifies the record.
 
-One thing the script cannot know about: the **unposted** Discussion #1 draft addressed to Nita and
-the secretaries. Repoint it before it is posted.
+Still to do by hand: the **unposted** Discussion #1 draft addressed to Nita and the Secretaries.
+Repoint it before it is posted.
 
-## 5. Notion teamspace, then invite
+## 5. Notion teamspace, then invite — OPEN
 
 The Notion API has no teamspace endpoints — all of this is done in the Notion interface.
 
