@@ -79,7 +79,8 @@ This repo is public and generates its data from a credentialled source; all acce
 
 ## Status — 2026-08-15
 
-- `scripts/replit-proxy-DEPRECATED/` is the Express proxy currently serving the map from Replit.
+- `scripts/replit-proxy-DEPRECATED/` is the retired Express proxy. Nothing runs it: the map has been
+  served from `graph.json` since 2026-08-14. Kept only until the org migration, which deletes it.
   It is being replaced by a scheduled GitHub Action that commits `graph.json`. **It stays until the
   Action is proven against its output** — 23 nodes / 26 edges as of 2026-08-14.
 - `docs/schema-current.md` is still the hand-written February version. It is superseded by
