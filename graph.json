@@ -91,6 +91,398 @@
       "notionUrl": "https://notion.so/2e336f743758809291bfc1952e50e230"
     },
     {
+      "id": "role-0",
+      "name": "Facilitator",
+      "fullName": "Facilitator: Farm Ops",
+      "purpose": "Facilitates the Farm Ops Circle's governance and tactical meetings.",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Facilitator",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/3cc36f743758815a9ae5d1763182cbc1"
+    },
+    {
+      "id": "role-1",
+      "name": "Facilities Maintenance",
+      "fullName": "Facilities Maintenance",
+      "purpose": "Physical Structures & Infrastructures all in good state of repair",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/30f36f7437588035b6bafa8d19ae78bf"
+    },
+    {
+      "id": "role-2",
+      "name": "Secretary",
+      "fullName": "Secretary: Farm Ops",
+      "purpose": "Maintains governance records for the Farm Ops Circle",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Secretary",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/30136f7437588004bdaae7b85fbcaeb1"
+    },
+    {
+      "id": "role-3",
+      "name": "Circle Rep",
+      "fullName": "circleRep: OMG: Organic Market Garden",
+      "purpose": "Brings tensions from OMG to Farm Ops",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/30136f743758802fa621c25e1da76611"
+    },
+    {
+      "id": "role-4",
+      "name": "Circle Lead",
+      "fullName": "circleLead: OMG: Organic Market Garden",
+      "purpose": "Everything you need to be well-nourished",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Lead",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/30136f74375880a19c5ff31c5bcf0e5c"
+    },
+    {
+      "id": "role-5",
+      "name": "Circle Rep",
+      "fullName": "circleRep: VdL Farm",
+      "purpose": "",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/30136f74375880ef9f93ecc08313e40a"
+    },
+    {
+      "id": "role-6",
+      "name": "Circle Lead",
+      "fullName": "circleLead: VdL Farm",
+      "purpose": "",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Lead",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/30136f743758808ebfcfefdd6787df49"
+    },
+    {
+      "id": "role-7",
+      "name": "Secretary",
+      "fullName": "Secretary — B&B Accommodations",
+      "purpose": "Maintains governance records for the B&B sub-circle",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Secretary",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f74375881649bf6f5cdfd90a35e"
+    },
+    {
+      "id": "role-8",
+      "name": "Circle Rep",
+      "fullName": "circleRep: B&B Accommodations",
+      "purpose": "Brings tensions from B&B to Casa Ops",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 1,
+      "notionUrl": "https://notion.so/2ff36f74375881a48081d533a09be8c3"
+    },
+    {
+      "id": "role-9",
+      "name": "Secretary",
+      "fullName": "Secretary — Activities",
+      "purpose": "Maintains governance records for the Activities sub-circle",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Secretary",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f743758814b80add7e799334647"
+    },
+    {
+      "id": "role-10",
+      "name": "Secretary",
+      "fullName": "Secretary — Groups & Retreats",
+      "purpose": "Maintains governance records for the Groups & Retreats sub-circle",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Secretary",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f743758814ea651e922512fd9a7"
+    },
+    {
+      "id": "role-11",
+      "name": "Circle Rep",
+      "fullName": "circleRep: Groups & Retreats",
+      "purpose": "Brings tensions from Groups & Retreats to Casa Ops",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f743758813eb58fed3e82a2f8e1"
+    },
+    {
+      "id": "role-12",
+      "name": "Secretary",
+      "fullName": "Secretary — Restaurant",
+      "purpose": "Maintains governance records for the Restaurant sub-circle",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Secretary",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f743758811eacfff0df6add6ada"
+    },
+    {
+      "id": "role-13",
+      "name": "Circle Rep",
+      "fullName": "circleRep: Restaurant",
+      "purpose": "Brings tensions from the Restaurant to Casa Ops",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f74375881cb9173c4010cc4376f"
+    },
+    {
+      "id": "role-14",
+      "name": "Circle Rep",
+      "fullName": "circleRep: Activities",
+      "purpose": "Brings tensions from Activities to Casa Ops",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ff36f743758811b9232fc086aa23c61"
+    },
+    {
+      "id": "role-15",
+      "name": "Circle Lead",
+      "fullName": "circleLead: Activities",
+      "purpose": "Holds the purpose of the Activities sub-circle, sets priorities for activities and space use, allocates roles and resources",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Lead",
+      "core": true,
+      "vacant": true,
+      "domainCount": 7,
+      "accountabilityCount": 5,
+      "notionUrl": "https://notion.so/2ff36f74375881a6a9fad8fce09aec57"
+    },
+    {
+      "id": "role-16",
+      "name": "Circle Lead",
+      "fullName": "circleLead: Restaurant",
+      "purpose": "Holds the purpose of the Restaurant sub-circle, sets priorities and focus, allocates roles and resources within the sub-circle",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Lead",
+      "core": true,
+      "vacant": false,
+      "domainCount": 6,
+      "accountabilityCount": 6,
+      "notionUrl": "https://notion.so/2ff36f74375881049ca4cad9e2f4dccd"
+    },
+    {
+      "id": "role-17",
+      "name": "SilviCulture",
+      "fullName": "SilviCulture",
+      "purpose": "Healthy & Fruitful trees",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 1,
+      "accountabilityCount": 2,
+      "notionUrl": "https://notion.so/2ee36f743758809b9533ca79c0927db6"
+    },
+    {
+      "id": "role-18",
+      "name": "Water Guardian",
+      "fullName": "Water Guardian",
+      "purpose": "",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ee36f743758800bb7b3c3a3423715f8"
+    },
+    {
+      "id": "role-19",
+      "name": "Circle Rep",
+      "fullName": "circleRep: Farm Ops",
+      "purpose": "",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": true,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ed36f743758807daaedf4d58762c928"
+    },
+    {
+      "id": "role-20",
+      "name": "Circle Lead",
+      "fullName": "circleLead: Farm Ops",
+      "purpose": "",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Lead",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ed36f7437588091990dd9b7d85fe75d"
+    },
+    {
+      "id": "role-21",
+      "name": "Circle Rep",
+      "fullName": "circleRep: Casa Ops",
+      "purpose": "",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Rep",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ed36f743758801aabf2c6c479fed940"
+    },
+    {
+      "id": "role-22",
+      "name": "Circle Lead",
+      "fullName": "circleLead: Casa Ops",
+      "purpose": "",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Circle Lead",
+      "core": true,
+      "vacant": false,
+      "domainCount": 0,
+      "accountabilityCount": 0,
+      "notionUrl": "https://notion.so/2ed36f743758808f84def14ce974f29a"
+    },
+    {
+      "id": "role-23",
+      "name": "Marketing",
+      "fullName": "Marketing",
+      "purpose": "Manage marketing plan",
+      "status": "Vacant",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 1,
+      "accountabilityCount": 1,
+      "notionUrl": "https://notion.so/2ec36f74375880f981adfc5501d4f9c9"
+    },
+    {
+      "id": "role-24",
+      "name": "Accounting",
+      "fullName": "Accounting",
+      "purpose": "Company accounts kept current, accurate & transparent",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 1,
+      "accountabilityCount": 1,
+      "notionUrl": "https://notion.so/2eb36f7437588009a960c003eaf6009e"
+    },
+    {
+      "id": "role-25",
+      "name": "Landscape Design",
+      "fullName": "Landscape Design",
+      "purpose": "All landplots of farm as beautiful as they are functional:  Ecologically, Economically & Socially",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 1,
+      "accountabilityCount": 2,
+      "notionUrl": "https://notion.so/2e336f74375880d1944ae8bf040d017b"
+    },
+    {
+      "id": "role-26",
+      "name": "Kitchen Design",
+      "fullName": "Kitchen Design",
+      "purpose": "An open-concept kitchen that pleases both kitchen workers and dining guests",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 1,
+      "accountabilityCount": 1,
+      "notionUrl": "https://notion.so/2e336f7437588062a931f32a37b32d4c"
+    },
+    {
+      "id": "role-27",
+      "name": "Finance",
+      "fullName": "Finance",
+      "purpose": "Manage cashflow",
+      "status": "Active",
+      "nodeType": "role",
+      "roleType": "Defined Role",
+      "core": false,
+      "vacant": false,
+      "domainCount": 1,
+      "accountabilityCount": 1,
+      "notionUrl": "https://notion.so/2e336f7437588032904ae81deae757c1"
+    },
+    {
       "id": "person-0",
       "name": "Miguel",
       "fullName": "Miguel",
@@ -267,112 +659,376 @@
       "label": "Sub-circle of"
     },
     {
-      "source": "person-2",
-      "target": "circle-2",
-      "type": "represents",
-      "label": "Circle Rep"
-    },
-    {
-      "source": "person-3",
-      "target": "circle-3",
-      "type": "leads",
-      "label": "Circle Lead"
-    },
-    {
-      "source": "person-6",
-      "target": "circle-4",
-      "type": "leads",
-      "label": "Circle Lead"
-    },
-    {
-      "source": "person-7",
-      "target": "circle-4",
-      "type": "represents",
-      "label": "Circle Rep"
-    },
-    {
-      "source": "person-13",
-      "target": "circle-6",
-      "type": "leads",
-      "label": "Circle Lead"
-    },
-    {
-      "source": "person-12",
-      "target": "circle-6",
-      "type": "represents",
-      "label": "Circle Rep"
-    },
-    {
-      "source": "person-9",
+      "source": "role-0",
       "target": "circle-7",
-      "type": "leads",
-      "label": "Circle Lead"
+      "type": "holds",
+      "roleType": "Facilitator",
+      "core": true,
+      "label": "Facilitator"
     },
     {
-      "source": "person-11",
-      "target": "circle-8",
-      "type": "leads",
-      "label": "Circle Lead"
+      "source": "role-1",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
     },
     {
-      "source": "person-10",
-      "target": "circle-8",
-      "type": "represents",
+      "source": "role-2",
+      "target": "circle-7",
+      "type": "holds",
+      "roleType": "Secretary",
+      "core": true,
+      "label": "Secretary"
+    },
+    {
+      "source": "role-3",
+      "target": "circle-4",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
       "label": "Circle Rep"
+    },
+    {
+      "source": "role-4",
+      "target": "circle-4",
+      "type": "holds",
+      "roleType": "Circle Lead",
+      "core": true,
+      "label": "Circle Lead"
+    },
+    {
+      "source": "role-5",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-6",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Circle Lead",
+      "core": true,
+      "label": "Circle Lead"
+    },
+    {
+      "source": "role-7",
+      "target": "circle-2",
+      "type": "holds",
+      "roleType": "Secretary",
+      "core": true,
+      "label": "Secretary"
+    },
+    {
+      "source": "role-8",
+      "target": "circle-2",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-9",
+      "target": "circle-1",
+      "type": "holds",
+      "roleType": "Secretary",
+      "core": true,
+      "label": "Secretary"
+    },
+    {
+      "source": "role-10",
+      "target": "circle-0",
+      "type": "holds",
+      "roleType": "Secretary",
+      "core": true,
+      "label": "Secretary"
+    },
+    {
+      "source": "role-11",
+      "target": "circle-0",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-12",
+      "target": "circle-3",
+      "type": "holds",
+      "roleType": "Secretary",
+      "core": true,
+      "label": "Secretary"
+    },
+    {
+      "source": "role-13",
+      "target": "circle-3",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-14",
+      "target": "circle-1",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-15",
+      "target": "circle-1",
+      "type": "holds",
+      "roleType": "Circle Lead",
+      "core": true,
+      "label": "Circle Lead"
+    },
+    {
+      "source": "role-16",
+      "target": "circle-3",
+      "type": "holds",
+      "roleType": "Circle Lead",
+      "core": true,
+      "label": "Circle Lead"
+    },
+    {
+      "source": "role-17",
+      "target": "circle-5",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-17",
+      "target": "circle-7",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-18",
+      "target": "circle-7",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-19",
+      "target": "circle-7",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-20",
+      "target": "circle-7",
+      "type": "holds",
+      "roleType": "Circle Lead",
+      "core": true,
+      "label": "Circle Lead"
+    },
+    {
+      "source": "role-21",
+      "target": "circle-8",
+      "type": "holds",
+      "roleType": "Circle Rep",
+      "core": true,
+      "label": "Circle Rep"
+    },
+    {
+      "source": "role-22",
+      "target": "circle-8",
+      "type": "holds",
+      "roleType": "Circle Lead",
+      "core": true,
+      "label": "Circle Lead"
+    },
+    {
+      "source": "role-23",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-24",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-25",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-26",
+      "target": "circle-8",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
+    },
+    {
+      "source": "role-27",
+      "target": "circle-6",
+      "type": "holds",
+      "roleType": "Defined Role",
+      "core": false,
+      "label": "Defined Role"
     },
     {
       "source": "person-0",
-      "target": "circle-6",
+      "target": "role-25",
       "type": "energizes",
-      "label": "Member"
+      "label": "Energizes"
     },
     {
       "source": "person-1",
-      "target": "circle-6",
+      "target": "role-1",
       "type": "energizes",
-      "label": "Member"
+      "label": "Energizes"
+    },
+    {
+      "source": "person-2",
+      "target": "role-8",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-3",
+      "target": "role-16",
+      "type": "energizes",
+      "label": "Energizes"
     },
     {
       "source": "person-4",
-      "target": "circle-6",
+      "target": "role-23",
       "type": "energizes",
-      "label": "Member"
+      "label": "Energizes"
     },
     {
       "source": "person-5",
-      "target": "circle-7",
+      "target": "role-17",
       "type": "energizes",
-      "label": "Member"
+      "label": "Energizes"
     },
     {
       "source": "person-5",
-      "target": "circle-5",
+      "target": "role-0",
       "type": "energizes",
-      "label": "Member"
+      "label": "Energizes"
+    },
+    {
+      "source": "person-6",
+      "target": "role-18",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-6",
+      "target": "role-4",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-7",
+      "target": "role-3",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-7",
+      "target": "role-2",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-9",
+      "target": "role-20",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-10",
+      "target": "role-21",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-11",
+      "target": "role-22",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-12",
+      "target": "role-26",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-12",
+      "target": "role-24",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-12",
+      "target": "role-5",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-13",
+      "target": "role-27",
+      "type": "energizes",
+      "label": "Energizes"
+    },
+    {
+      "source": "person-13",
+      "target": "role-6",
+      "type": "energizes",
+      "label": "Energizes"
     },
     {
       "source": "person-8",
       "target": "circle-7",
-      "type": "energizes",
-      "label": "Member"
+      "type": "member",
+      "label": "Member, no role recorded"
     },
     {
       "source": "person-8",
       "target": "circle-4",
-      "type": "energizes",
-      "label": "Member"
+      "type": "member",
+      "label": "Member, no role recorded"
     },
     {
       "source": "person-9",
       "target": "circle-5",
-      "type": "energizes",
-      "label": "Member"
+      "type": "member",
+      "label": "Member, no role recorded"
     }
   ],
   "meta": {
     "circleCount": 9,
     "personCount": 14,
-    "edgeCount": 25,
+    "roleCount": 28,
+    "vacantRoleCount": 9,
+    "edgeCount": 59,
     "source": "Notion API — generated by scripts/build-graph.mjs"
   }
 }
