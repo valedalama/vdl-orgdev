@@ -91,14 +91,22 @@ async function buildGraphData() {
 
   const notionToNode = {};
   nodes.forEach((n) => { notionToNode[n.notionId] = n; });
-  nodes.forEach((n) => {
-    if (n.nodeType !== "circle") return;
-    if (n.superCircleNotionIds.length === 0) n.level = 0;
-    else {
-      const parent = notionToNode[n.superCircleNotionIds[0]];
-      n.level = parent && parent.superCircleNotionIds.length === 0 ? 1 : 2;
+
+  // Depth is how far a circle sits below the anchor, walked all the way up
+  // rather than guessed from its parent's parent. The previous version looked
+  // one generation up and capped at 2, which is correct for a three-level
+  // holarchy and silently wrong for a fourth — and a holarchy that cannot
+  // count its own depth cannot be drawn as one.
+  const depthOf = (n, seen = new Set()) => {
+    if (!n || n.superCircleNotionIds.length === 0) return 0;
+    if (seen.has(n.notionId)) {
+      console.warn(`cycle in Super-circle at "${n.name}" — treating it as top level`);
+      return 0;                                     // a cycle is bad data, not a hang
     }
-  });
+    seen.add(n.notionId);
+    return 1 + depthOf(notionToNode[n.superCircleNotionIds[0]], seen);
+  };
+  nodes.forEach((n) => { if (n.nodeType === "circle") n.level = depthOf(n); });
 
   peoplePages.forEach((page, i) => {
     const props = page.properties;
