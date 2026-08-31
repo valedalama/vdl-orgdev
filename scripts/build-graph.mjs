@@ -64,6 +64,7 @@ const extractText = (p) =>
 
 const extractRelationIds = (p) => (!p || p.type !== "relation" ? [] : p.relation.map((r) => r.id));
 const extractSelect = (p) => (!p || p.type !== "select" || !p.select ? null : p.select.name);
+const extractDate = (p) => (!p || p.type !== "date" || !p.date ? "" : p.date.start);
 
 async function buildGraphData() {
   const [circlePages, peoplePages, rolePages] = await Promise.all([
@@ -138,6 +139,10 @@ async function buildGraphData() {
       accountabilityCount: extractRelationIds(props["Accountabilities"]).length,
       circleNotionIds: extractRelationIds(props["Circle"]),
       status: extractSelect(props["Status (Legacy)"]) || "Active",
+      // Blank means "no record of ratification", which is not the same as "not
+      // ratified" — and today it is the true state of almost every assignment.
+      ratifiedOn: extractDate(props["Ratified On"]),
+      reviewDate: extractDate(props["Review Date"]),
     });
   });
 
@@ -226,6 +231,8 @@ async function buildGraphData() {
     roleType: n.roleType,
     core: n.core,
     vacant: n.vacant,
+    ratifiedOn: n.ratifiedOn,
+    reviewDate: n.reviewDate,
     domainCount: n.domainCount,
     accountabilityCount: n.accountabilityCount,
     notionUrl: `https://notion.so/${n.notionId.replace(/-/g, "")}`,
@@ -239,6 +246,7 @@ async function buildGraphData() {
       personCount: cleanNodes.filter((n) => n.nodeType === "person").length,
       roleCount: cleanNodes.filter((n) => n.nodeType === "role").length,
       vacantRoleCount: cleanNodes.filter((n) => n.nodeType === "role" && n.vacant).length,
+      unratifiedRoleCount: cleanNodes.filter((n) => n.nodeType === "role" && !n.vacant && !n.ratifiedOn).length,
       edgeCount: edges.length,
       // NOTE: deliberately no timestamp. A timestamp would make every run a
       // commit, so the git history would record when the job ran rather than

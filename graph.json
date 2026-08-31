@@ -100,6 +100,8 @@
       "roleType": "Facilitator",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/3cc36f743758815a9ae5d1763182cbc1"
@@ -114,6 +116,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/30f36f7437588035b6bafa8d19ae78bf"
@@ -128,6 +132,8 @@
       "roleType": "Secretary",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/30136f7437588004bdaae7b85fbcaeb1"
@@ -142,6 +148,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/30136f743758802fa621c25e1da76611"
@@ -156,6 +164,8 @@
       "roleType": "Circle Lead",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/30136f74375880a19c5ff31c5bcf0e5c"
@@ -170,6 +180,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/30136f74375880ef9f93ecc08313e40a"
@@ -184,6 +196,8 @@
       "roleType": "Circle Lead",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/30136f743758808ebfcfefdd6787df49"
@@ -198,6 +212,8 @@
       "roleType": "Secretary",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f74375881649bf6f5cdfd90a35e"
@@ -212,6 +228,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 1,
       "notionUrl": "https://notion.so/2ff36f74375881a48081d533a09be8c3"
@@ -226,6 +244,8 @@
       "roleType": "Secretary",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f743758814b80add7e799334647"
@@ -240,6 +260,8 @@
       "roleType": "Secretary",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f743758814ea651e922512fd9a7"
@@ -254,6 +276,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f743758813eb58fed3e82a2f8e1"
@@ -268,6 +292,8 @@
       "roleType": "Secretary",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f743758811eacfff0df6add6ada"
@@ -282,6 +308,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f74375881cb9173c4010cc4376f"
@@ -296,6 +324,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ff36f743758811b9232fc086aa23c61"
@@ -310,6 +340,8 @@
       "roleType": "Circle Lead",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 7,
       "accountabilityCount": 5,
       "notionUrl": "https://notion.so/2ff36f74375881a6a9fad8fce09aec57"
@@ -324,6 +356,8 @@
       "roleType": "Circle Lead",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 6,
       "accountabilityCount": 6,
       "notionUrl": "https://notion.so/2ff36f74375881049ca4cad9e2f4dccd"
@@ -338,6 +372,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 1,
       "accountabilityCount": 2,
       "notionUrl": "https://notion.so/2ee36f743758809b9533ca79c0927db6"
@@ -352,6 +388,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ee36f743758800bb7b3c3a3423715f8"
@@ -366,6 +404,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": true,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ed36f743758807daaedf4d58762c928"
@@ -380,6 +420,8 @@
       "roleType": "Circle Lead",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ed36f7437588091990dd9b7d85fe75d"
@@ -394,6 +436,8 @@
       "roleType": "Circle Rep",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ed36f743758801aabf2c6c479fed940"
@@ -408,6 +452,8 @@
       "roleType": "Circle Lead",
       "core": true,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 0,
       "accountabilityCount": 0,
       "notionUrl": "https://notion.so/2ed36f743758808f84def14ce974f29a"
@@ -422,6 +468,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 1,
       "accountabilityCount": 1,
       "notionUrl": "https://notion.so/2ec36f74375880f981adfc5501d4f9c9"
@@ -436,6 +484,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 1,
       "accountabilityCount": 1,
       "notionUrl": "https://notion.so/2eb36f7437588009a960c003eaf6009e"
@@ -450,6 +500,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 1,
       "accountabilityCount": 2,
       "notionUrl": "https://notion.so/2e336f74375880d1944ae8bf040d017b"
@@ -464,6 +516,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 1,
       "accountabilityCount": 1,
       "notionUrl": "https://notion.so/2e336f7437588062a931f32a37b32d4c"
@@ -478,6 +532,8 @@
       "roleType": "Defined Role",
       "core": false,
       "vacant": false,
+      "ratifiedOn": "",
+      "reviewDate": "",
       "domainCount": 1,
       "accountabilityCount": 1,
       "notionUrl": "https://notion.so/2e336f7437588032904ae81deae757c1"
@@ -1028,6 +1084,7 @@
     "personCount": 14,
     "roleCount": 28,
     "vacantRoleCount": 9,
+    "unratifiedRoleCount": 19,
     "edgeCount": 59,
     "source": "Notion API — generated by scripts/build-graph.mjs"
   }
