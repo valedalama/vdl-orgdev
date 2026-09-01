@@ -732,11 +732,29 @@ them, and <strong>Export</strong> hands them back as files you can commit.</p>
 </ol>
 
 <div class="aside">
+  <span class="tag">Putting a map inside a repository you already have</span>
+  <p>Forking gets you everything. If instead you are dropping a map into an existing site, copy
+  <strong>five</strong> things into one folder and nothing else: <code>index.html</code>,
+  <code>manifest.json</code>, your <code>schemas/</code>, your data, and
+  <code>vendor/d3.min.js</code>.</p>
+  <p><strong>The vendored copy of d3 is the one people forget</strong> &mdash; we forgot it. The map
+  then loads looking almost right: the title, the banner and the dataset switcher all appear, and the
+  canvas is simply empty. The console says <code>ReferenceError: d3 is not defined</code>. Nothing
+  else produces that particular half-working page.</p>
+</div>
+
+<div class="aside">
   <span class="tag">What a deployment declares</span>
   <p><code>manifest.json</code> carries the title, the mode, the datasets and where each one's data
-  comes from &mdash; a pair of CSVs, or a single <code>{nodes, edges}</code> JSON. <strong>Adding an
-  organisation touches no code.</strong> That is not an aspiration: it was tested by adding a third
-  one and checking that the renderer file was untouched.</p>
+  comes from &mdash; a pair of CSVs, or a single JSON file shaped either
+  <code>{nodes, edges}</code> or <code>{nodes, relationships}</code>. Both are read; a loader is never
+  asked to adopt the other one's key names.</p>
+  <p><strong>Adding an organisation touches no code.</strong> That is not an aspiration, and it is no
+  longer only a test: <strong>the Vale da Lama governance map and the barlavento.eco community map run
+  the same <code>index.html</code>, byte for byte.</strong> One draws a Holacracy holarchy from a
+  Notion database; the other draws a peer network of independent farms from profiles those farms
+  publish on their own domains. What differs between them is a manifest, two schema files and the
+  data.</p>
 </div>
 
 <h2 id="provisional"><span class="num">12</span>What is provisional &mdash; and what to tell us</h2>
