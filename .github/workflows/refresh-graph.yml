@@ -50,10 +50,15 @@ jobs:
             // lead/rep collapses to a generic "Member" edge, and the graph
             // still looks perfectly plausible. Assert the semantics, not just
             // the size.
+            // The point of this check has always been "can the integration see the
+            // Roles database" — leads/represents were only ever the proxy for it,
+            // and issue #2 removed them on purpose. Assert the thing itself.
             const kinds = new Set(g.edges.map(e => e.type));
-            if (!kinds.has("leads") || !kinds.has("represents")) {
+            const roleCount = g.nodes.filter((n) => n.nodeType === "role").length;
+            if (roleCount === 0 || !kinds.has("holds") || !kinds.has("energizes")) {
               throw new Error(
-                "Refusing to commit: no leads/represents edges. The integration is " +
+                `Refusing to commit: ${roleCount} role nodes, edge kinds [${[...kinds]}]. ` +
+                "Expected role nodes joined by holds and energizes — the integration is " +
                 "almost certainly not connected to the Roles database."
               );
             }
