@@ -325,20 +325,27 @@ function cacheUsable(d){
   return true;
 }
 
-// Kept deliberately narrow: source shapes, not organisations. build-graph.mjs
-// already emits {nodes:[{id,name,nodeType,...}], edges:[{source,type,target}]},
-// so the adapter is a rename, not a translation.
+// Kept deliberately narrow: source shapes, not organisations. Two exist.
+// build-graph.mjs emits {nodes, edges:[{source,type,target}]}; a loader that
+// already speaks the vocabulary emits {nodes, relationships:[{subject,
+// predicate,object}]}. Neither is asked to adopt the other's key names.
+//
+// One collision makes this more than a rename: `source` means the SUBJECT in
+// the first shape and the PROVENANCE in the second. So a row that names its own
+// subject is passed through untouched, and `source` keeps the meaning it came
+// with; only the other shape is renamed, and its three keys are consumed so a
+// subject id cannot leak out as a provenance chip.
 async function fetchGraph(src){
   const r = await fetch(src.path, { cache: "no-store" });
   if (!r.ok) throw new Error("graph source " + r.status + " at " + src.path);
   const g = await r.json();
   return {
     nodes: (g.nodes || []).map(n => ({ ...n })),
-    edges: (g.edges || []).map(e => ({
-      ...e,
-      subject: e.source, predicate: e.type, object: e.target,
-      note: e.label || "",
-    })),
+    edges: (g.relationships || g.edges || []).map(e => {
+      if (e.subject !== undefined) return { ...e, note: e.note || "" };
+      const { source, type, target, label, ...rest } = e;
+      return { ...rest, subject: source, predicate: type, object: target, note: label || "" };
+    }),
   };
 }
 
@@ -412,14 +419,14 @@ function project(){
       // the reciprocal row still gets a say: its provenance, its doubt, its note
       const l = seen.get(key);
       l.mutual = true;
-      l.provs.add(e.source || "unrecorded");
+      if (e.source) l.provs.add(e.source);
       if (e.confirmed === "false") l.confirmed = false;
       if (e.note && !l.note) l.note = e.note;
       if (e.via && !l.via) l.via = e.via;
     } else seen.set(key, { source: byId.get(e.subject), target: byId.get(e.object),
                            predicate: e.predicate, mutual: false,
                            confirmed: e.confirmed !== "false", note: e.note, via: e.via,
-                           provs: new Set([e.source || "unrecorded"]) });
+                           provs: new Set(e.source ? [e.source] : []) });
   });
   const links = Array.from(seen.values());
 
