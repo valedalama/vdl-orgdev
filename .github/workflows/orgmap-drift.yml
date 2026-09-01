@@ -1,0 +1,36 @@
+name: OrgMap drift
+
+# This repository does not own the OrgMap renderer — it carries copies of files
+# published by ludwa6/orgmap-lab. The convention is that the renderer is only
+# ever edited in the lab, and every other copy is a copy. Nothing enforces that.
+# This notices when it has been broken, and names the file and the direction.
+#
+# main is unprotected here deliberately, so this is an instrument rather than a
+# gate. It reports on direct pushes to main, which is how work usually lands.
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # @master rather than a version tag, and the difference is the whole
+      # point: the action compares against the hashes published at whichever ref
+      # is named here. @master catches a local edit AND catches this deployment
+      # falling behind the lab. @v1 could only ever catch the first, because it
+      # can never fail on account of the lab having moved on. Going stale is the
+      # failure we actually care about, and nothing third-party builds against
+      # this repo, so there is no reproducible-build claim to protect.
+      #
+      # files: has to be spelled out. The lab publishes six shared files; this
+      # deployment copies four. The action's empty default means "we copy
+      # everything", which here would fail on the two we deliberately do not
+      # have. path: is omitted because the copies sit at the repository root.
+      - uses: ludwa6/orgmap-lab@master
+        with:
+          files: "index.html vendor/d3.min.js schemas/vdl-target.json schemas/vdl-doublelink.json"
