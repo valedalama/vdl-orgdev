@@ -10,7 +10,6 @@
       "url": "https://github.com/valedalama/vdl-orgdev/tree/main/handbook/pt"
     }
   ],
-  "hideGuide": true,
   "defaultDataset": "vdl",
   "datasets": {
     "vdl": {
@@ -24,5 +23,6 @@
         "path": "graph.json"
       }
     }
-  }
+  },
+  "guideUrl": "docs/field-guide.html"
 }
