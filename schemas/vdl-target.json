@@ -1,0 +1,174 @@
+{
+  "id": "vdl-target",
+  "dataset": "vdl",
+  "label": "VdL — org:Post model (SHIPPED 2026-08-30)",
+  "note": "The model the map now emits. Roles are nodes; a person energizes a role; a role sits in its circle. A role that nobody holds still exists, which is why a vacant seat is now visible. This schema was the argument for issue #2; it is now the description of what is live.",
+  "governs": {
+    "label": "ludwa6/vdl-orgdev#2 (closed)",
+    "url": "https://github.com/valedalama/vdl-orgdev/issues/2"
+  },
+  "nodeTypes": [
+    {
+      "id": "circle",
+      "label": "Circle  (org:OrganizationalUnit)",
+      "color": "#6366f1",
+      "r": 26
+    },
+    {
+      "id": "role",
+      "label": "Role  (org:Post)",
+      "color": "#f5a623",
+      "r": 18
+    },
+    {
+      "id": "person",
+      "label": "Person  (foaf:Agent)",
+      "color": "#2dd4bf",
+      "r": 15
+    }
+  ],
+  "attributes": [
+    {
+      "key": "roleType",
+      "label": "Role type",
+      "control": "enum",
+      "values": [
+        "",
+        "Defined Role",
+        "Secretary",
+        "Facilitator",
+        "Circle Rep",
+        "Circle Lead"
+      ],
+      "render": "badge",
+      "rationale": "Notion's Role Type select already carries exactly these values — the typing work is done."
+    },
+    {
+      "key": "status",
+      "label": "Status",
+      "control": "enum-open",
+      "render": "color"
+    },
+    {
+      "key": "purpose",
+      "label": "Purpose",
+      "control": "text"
+    }
+  ],
+  "predicates": [
+    {
+      "id": "subcircle",
+      "label": "Sub-circle of  (org:subOrganizationOf)",
+      "kind": "edge",
+      "subjectTypes": [
+        "circle"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#6366f1",
+        "width": 2.2,
+        "dash": null
+      }
+    },
+    {
+      "id": "holds",
+      "label": "Role in its circle  (org:postIn)",
+      "kind": "edge",
+      "subjectTypes": [
+        "role"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#f5a623",
+        "width": 2.2,
+        "dash": null
+      }
+    },
+    {
+      "id": "energizes",
+      "label": "Fills the role  (org:holds)",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "role"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#2dd4bf",
+        "width": 1.8,
+        "dash": null
+      }
+    },
+    {
+      "id": "leads",
+      "label": "Leads  (collapsed)",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "deprecated": {
+        "message": "Collapsed edge. Should be person -> role(Circle Lead) -> circle; as drawn, a vacant Circle Lead is invisible.",
+        "issue": "valedalama/vdl-orgdev#2"
+      },
+      "style": {
+        "color": "#e4585f",
+        "width": 1.6,
+        "dash": "3,3"
+      }
+    },
+    {
+      "id": "represents",
+      "label": "Represents  (collapsed)",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "deprecated": {
+        "message": "Collapsed edge. Should be person -> role(Circle Rep) -> circle; as drawn, a vacant Circle Rep is invisible.",
+        "issue": "valedalama/vdl-orgdev#2"
+      },
+      "style": {
+        "color": "#e4585f",
+        "width": 1.6,
+        "dash": "3,3"
+      }
+    },
+    {
+      "id": "member",
+      "label": "Member, no role recorded",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "deprecated": {
+        "message": "The circle's member list claims this person, but no role in that circle does. Two records disagreeing, not extra information.",
+        "issue": "record reconciliation"
+      },
+      "style": {
+        "color": "#64748b",
+        "width": 1.5,
+        "dash": "2,4"
+      }
+    }
+  ]
+}

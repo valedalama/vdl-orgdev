@@ -1,202 +1,1437 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Organization Network Map — Quinta Vale da Lama</title>
-  <meta name="description" content="Interactive network visualization of VdL Farm Holacracy governance structure." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-  <style>
-    :root{--bg:#0a0f1a;--bg-card:#111827;--bg-panel:#1a2236;--border:#2a3a5c;--border-light:#3a4a6c;--text:#e8edf5;--text-muted:#8899bb;--text-dim:#5a6a8c;--circle-l0:#3b82f6;--circle-l1:#6366f1;--circle-l2:#8b5cf6;--person:#f59e0b;--edge-leads:#ef4444;--edge-represents:#10b981;--edge-energizes:#f59e0b;--edge-subcircle:#3b82f6;--role-core:#22d3ee;--role-defined:#94a3b8;--role-vacant:#f43f5e;--edge-holds:#22d3ee;--edge-member:#64748b;--accent:#6366f1}
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{background:linear-gradient(135deg,var(--bg) 0%,#0f1729 50%,#0a1020 100%);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column}
-    .header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(17,24,39,.85);backdrop-filter:blur(12px);flex-shrink:0;z-index:10}
-    .provisional{flex-shrink:0;z-index:9;display:flex;gap:10px;align-items:flex-start;padding:10px 24px;font-size:12.5px;line-height:1.5;color:#fde68a;background:rgba(180,120,20,.16);border-bottom:1px solid rgba(245,158,11,.35)}
-    .provisional strong{color:#fef3c7}
-    .provisional em{font-style:italic}
-    .provisional a{color:#fcd34d;text-decoration:underline;white-space:nowrap}
-    .provisional-mark{flex-shrink:0;font-size:14px;line-height:1.35}
-    .provisional-close{margin-left:auto;flex-shrink:0;background:none;border:none;color:#fde68a;font-size:18px;line-height:1;cursor:pointer;padding:0 2px;opacity:.6}
-    .provisional-close:hover{opacity:1}
-    .provisional.hidden{display:none}
-    @media (max-width:640px){.provisional{font-size:11.5px;padding:8px 14px}}
-    .header-left{display:flex;align-items:center;gap:14px}
-    .header-logo{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--circle-l0),var(--circle-l2));display:flex;align-items:center;justify-content:center;font-size:18px}
-    .header h1{font-size:17px;font-weight:700;letter-spacing:-.02em}
-    .header .subtitle{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace}
-    .header-right{display:flex;align-items:center;gap:12px}
-    .status-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;display:flex;align-items:center;gap:5px}
-    .status-badge.live{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
-    .status-badge.static{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
-    .status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-    .search-box{position:relative}
-    .search-box input{width:200px;padding:7px 12px 7px 30px;background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
-    .search-box input:focus{border-color:var(--accent)}
-    .search-box .icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.4}
-    .main{flex:1;display:flex;overflow:hidden;position:relative}
-    .graph-container{flex:1;position:relative}
-    .graph-container svg{display:block;width:100%;height:100%}
-    .legend{max-width:none;position:absolute;bottom:16px;left:16px;background:rgba(17,24,39,.92);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-size:11px;z-index:5}
-    .legend-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:8px}
-    .legend-grid{display:flex;gap:20px}
-    .legend-col{min-width:132px;display:flex;flex-direction:column;gap:5px}
-    .legend-item{white-space:nowrap;display:flex;align-items:center;gap:8px;color:var(--text-muted);cursor:pointer;transition:opacity .2s;user-select:none}
-    .legend-item.disabled{opacity:.3}
-    .legend-node{width:12px;height:12px;border-radius:50%}
-    .legend-hint{font-size:9px;color:var(--text-dim);margin-top:6px}
-    .tooltip{position:absolute;top:16px;right:16px;background:rgba(17,24,39,.92);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:12px;padding:12px 16px;max-width:280px;pointer-events:none;z-index:5;opacity:0;transform:translateY(-4px);transition:opacity .15s,transform .15s}
-    .tooltip.visible{opacity:1;transform:translateY(0)}
-    .tooltip-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-    .tooltip-dot{width:10px;height:10px;border-radius:50%}
-    .tooltip-name{font-weight:700;font-size:14px}
-    .tooltip-purpose{font-size:12px;color:var(--text-muted);line-height:1.4}
-    .tooltip-meta{margin-top:6px;font-size:10px;color:var(--text-dim);font-family:'DM Mono',monospace}
-    .detail-panel{width:300px;border-left:1px solid var(--border);background:var(--bg-card);padding:20px;overflow-y:auto;flex-shrink:0;transform:translateX(100%);transition:transform .25s ease-out;z-index:5}
-    .detail-panel.open{transform:translateX(0)}
-    .detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
-    .detail-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
-    .detail-name{font-size:16px;font-weight:700}
-    .detail-type{margin-top:2px;font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace}
-    .close-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:4px}
-    .close-btn:hover{color:var(--text)}
-    .purpose-box{padding:12px 14px;background:var(--bg-panel);border-radius:10px;margin-bottom:16px}
-    .section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:4px}
-    .purpose-text{font-size:13px;line-height:1.5}
-    .conn-list{display:flex;flex-direction:column;gap:6px}
-    .conn-item{padding:10px 12px;background:var(--bg-panel);border-radius:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s}
-    .conn-item:hover{background:rgba(58,74,108,.3)}
-    .conn-bar{width:4px;height:24px;border-radius:2px;flex-shrink:0}
-    .conn-name{font-size:13px;font-weight:500}
-    .conn-type{font-size:10px;color:var(--text-dim);font-family:'DM Mono',monospace}
-    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
-    .stat-box{text-align:center;padding:8px 4px;background:rgba(10,15,26,.5);border-radius:6px}
-    .stat-value{font-size:18px;font-weight:700}
-    .stat-label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
-    .loading-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:20;transition:opacity .5s}
-    .loading-overlay.hidden{opacity:0;pointer-events:none}
-    .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .loading-text{margin-top:14px;font-size:13px;color:var(--text-muted)}
-    @media(max-width:768px){.header{padding:10px 14px}.header h1{font-size:14px}.search-box input{width:140px}.detail-panel{width:260px}.legend{bottom:10px;left:10px;padding:10px 14px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OrgMap Lab</title>
+<script src="vendor/d3.min.js"></script>
+<style>
+  :root{
+    --bg:#0a0f1a; --panel:#111827; --panel2:#1a2236; --border:#2a3a5c; --border2:#3a4a6c;
+    --text:#e8edf5; --muted:#8899bb; --dim:#5a6a8c; --accent:#6366f1;
+    --ok:#2dd4bf; --warn:#f5a623; --err:#e4585f;
+    --ui:ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);font-size:13px;
+       display:flex;flex-direction:column;overflow:hidden}
+
+  header{border-bottom:1px solid var(--border);background:var(--panel);padding:.65rem 1rem;
+         display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap;flex:0 0 auto}
+  header h1{margin:0;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .field{display:flex;align-items:center;gap:.4rem}
+  .field label{color:var(--dim);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+  select,input,button{font-family:inherit;font-size:12px;color:var(--text);background:var(--panel2);
+                      border:1px solid var(--border2);border-radius:6px;padding:.3rem .5rem}
+  select:focus,input:focus{outline:1px solid var(--accent)}
+  button{cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  a.btn{font-family:inherit;font-size:12px;color:var(--text);background:var(--panel2);
+        border:1px solid var(--border2);border-radius:6px;padding:.3rem .5rem;
+        text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+  a.btn:hover{border-color:var(--accent);color:var(--text)}
+  a.btn .ext{color:var(--dim);font-size:10px}
+  a.btn:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  button.primary{background:var(--accent);border-color:var(--accent);font-weight:600}
+  .spacer{margin-left:auto}
+  .banner{padding:.5rem 1rem;background:var(--panel2);border-bottom:1px solid var(--border);
+          color:var(--muted);font-size:12px;line-height:1.5;flex:0 0 auto}
+  .banner a{color:var(--accent)}
+  .banner b{color:var(--text)}
+
+  main{flex:1 1 auto;display:flex;min-height:0}
+  aside{width:250px;flex:0 0 250px;border-right:1px solid var(--border);background:var(--panel);
+        overflow-y:auto;padding:.9rem}
+  aside h2{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+           margin:1.1rem 0 .5rem;font-weight:700}
+  aside h2:first-child{margin-top:0}
+  .toggle{display:flex;align-items:center;gap:.5rem;padding:.28rem 0;cursor:pointer;color:var(--muted)}
+  .toggle:hover{color:var(--text)}
+  .toggle input{margin:0}
+  .swatch{width:22px;height:0;border-top-width:3px;border-top-style:solid;flex:0 0 22px}
+  .dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px}
+  .kindtag{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);
+           border:1px solid var(--border2);border-radius:99px;padding:0 .35rem;margin-left:auto}
+  .stat{display:flex;justify-content:space-between;padding:.22rem 0;color:var(--muted);border-bottom:1px solid rgba(42,58,92,.5)}
+  .stat b{color:var(--text);font-variant-numeric:tabular-nums}
+
+  #stage{flex:1 1 auto;display:flex;flex-direction:column;min-width:0}
+  #graphwrap{flex:1 1 auto;position:relative;min-height:0}
+  svg{display:block;width:100%;height:100%}
+  .nlabel{font-size:11px;font-weight:600;fill:var(--text);pointer-events:none}
+  .nsub{font-size:9px;fill:var(--dim);pointer-events:none}
+  .bead-face{font-size:11px;font-weight:700;pointer-events:none;letter-spacing:.03em}
+  .bead-badge{font-size:8px;font-weight:700;fill:var(--warn);pointer-events:none}
+
+  #split{flex:0 0 auto;height:7px;cursor:row-resize;background:var(--border);
+         border-top:1px solid var(--bg);border-bottom:1px solid var(--bg)}
+  #split:hover,#split.dragging{background:var(--accent)}
+  #drawer{flex:0 0 auto;height:42%;border-top:1px solid var(--border);background:var(--panel);
+          display:flex;flex-direction:column;min-height:0}
+  /* map-only: the tab strip stays so the panels are one click away */
+  body.panels-off #drawer{height:auto!important}
+  body.panels-off .pane{display:none!important}
+  body.panels-off #split{display:none}
+  body.controls-off aside{display:none}
+  /* read-only: the drawer and its handle are removed, so the map is the page */
+  body.read-only #stage{height:100%}
+  body.read-only .tabtools{display:none}
+  .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex:0 0 auto;align-items:center}
+  .tab{padding:.5rem .9rem;cursor:pointer;color:var(--dim);border-bottom:2px solid transparent;
+       font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+  .tab.on{color:var(--text);border-bottom-color:var(--accent)}
+  .tab .badge{display:inline-block;margin-left:.4rem;border-radius:99px;padding:0 .35rem;
+              font-size:.66rem;background:var(--err);color:#fff}
+  .tab .badge.zero{background:var(--ok);color:#062}
+  .tabtools{margin-left:auto;display:flex;gap:.4rem;padding:0 .7rem}
+  .pane{flex:1 1 auto;overflow:auto;padding:.6rem .7rem;display:none}
+  .pane.on{display:block}
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  th{position:sticky;top:0;background:var(--panel);text-align:left;color:var(--dim);font-weight:600;
+     font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .4rem;
+     border-bottom:1px solid var(--border);z-index:1;white-space:nowrap}
+  td{padding:.12rem .2rem;border-bottom:1px solid rgba(42,58,92,.45);vertical-align:middle}
+  td select,td input{width:100%;padding:.22rem .35rem;border-color:transparent;background:transparent}
+  td select:hover,td input:hover{border-color:var(--border2);background:var(--panel2)}
+  td.bad select,td.bad input{border-color:var(--err);background:rgba(228,88,95,.12)}
+  .rm{color:var(--dim);cursor:pointer;padding:0 .4rem;border:0;background:none;font-size:14px}
+  .rm:hover{color:var(--err)}
+  .issue{border-left:3px solid var(--err);background:rgba(228,88,95,.07);padding:.5rem .7rem;
+         margin:0 0 .45rem;border-radius:0 6px 6px 0;line-height:1.5}
+  .issue.warn{border-left-color:var(--warn);background:rgba(245,166,35,.07)}
+  .issue.info{border-left-color:var(--ok);background:rgba(45,212,191,.07)}
+  .issue .rule{font-family:var(--mono);font-size:.7rem;color:var(--dim);letter-spacing:.02em}
+  .issue .where{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+  .clean{color:var(--ok);padding:1rem;text-align:center}
+
+  /* hover readout — one treatment for nodes and lines alike */
+  #tip{position:fixed;z-index:50;pointer-events:none;opacity:0;transition:opacity .09s;
+       max-width:340px;background:var(--panel2);border:1px solid var(--border2);border-radius:8px;
+       box-shadow:0 8px 28px -10px rgba(0,0,0,.75);padding:.55rem .7rem;font-size:12px;line-height:1.5}
+  #tip.on{opacity:1}
+  #tip .t-head{color:var(--text);font-weight:600;margin-bottom:.15rem}
+  #tip .t-pred{color:var(--muted);margin-bottom:.35rem}
+  #tip .t-pred b{color:var(--text);font-weight:600}
+  #tip dl{display:grid;grid-template-columns:auto 1fr;gap:.1rem .6rem;margin:0}
+  #tip dt{color:var(--dim);white-space:nowrap}
+  #tip dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
+  #tip .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
+  #tip .chip{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;
+             padding:.05rem .45rem;border:1px solid var(--border2);color:var(--muted)}
+  #tip .chip.ok{color:var(--ok);border-color:var(--ok)}
+  #tip .chip.warn{color:var(--warn);border-color:var(--warn)}
+  #tip .t-note{margin-top:.4rem;color:var(--dim);font-style:italic}
+
+  /* click-through detail panel — the hover readout is a glance, this is the record */
+  #detail{position:absolute;top:0;right:0;height:100%;width:340px;z-index:9;
+          background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;
+          transform:translateX(100%);transition:transform .22s ease-out;
+          box-shadow:-14px 0 34px -18px rgba(0,0,0,.9);padding:.9rem 1rem 2rem}
+  #detail.open{transform:translateX(0)}
+  #detail .d-top{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.9rem}
+  #detail .d-mark{width:26px;height:26px;border-radius:50%;flex:0 0 26px;margin-top:.1rem}
+  #detail .d-rule{width:26px;height:0;flex:0 0 26px;margin-top:.75rem;border-top-width:3px;border-top-style:solid}
+  #detail .d-name{display:block;color:var(--text);font-weight:600;font-size:14px;line-height:1.3}
+  #detail .d-kind{display:block;color:var(--dim);font-size:11px;letter-spacing:.06em;
+                  text-transform:uppercase;margin-top:.15rem}
+  #detail .d-close{margin-left:auto;border:0;background:none;color:var(--dim);font-size:16px;
+                   cursor:pointer;padding:0 .2rem;line-height:1}
+  #detail .d-close:hover{color:var(--text)}
+  #detail h3{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+             font-weight:700;margin:1.15rem 0 .4rem;border-top:1px solid var(--border);padding-top:.7rem}
+  #detail dl{display:grid;grid-template-columns:auto 1fr;gap:.22rem .7rem;margin:0;font-size:12px}
+  #detail dt{color:var(--dim);white-space:nowrap}
+  #detail dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
+  #detail .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin:.5rem 0 0}
+  #detail .chip{font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;
+                padding:.05rem .45rem;border:1px solid var(--border2);color:var(--muted)}
+  #detail .chip.ok{color:var(--ok);border-color:var(--ok)}
+  #detail .chip.warn{color:var(--warn);border-color:var(--warn)}
+  #detail .via{background:rgba(245,166,35,.10);border:1px solid var(--warn);border-radius:8px;
+               padding:.5rem .65rem;margin-top:.5rem}
+  #detail .via .who{color:var(--text);font-weight:600;font-size:13px}
+  #detail .via .cav{color:var(--dim);font-size:11px;line-height:1.45;margin-top:.25rem}
+  #detail pre{margin:.45rem 0 0;padding:.6rem .7rem;background:var(--bg);border:1px solid var(--border);
+              border-radius:8px;font-family:var(--mono);font-size:11px;line-height:1.5;color:var(--muted);
+              white-space:pre-wrap;word-break:break-all}
+  #detail .conn{display:flex;align-items:center;gap:.55rem;padding:.42rem .5rem;border-radius:7px;
+                cursor:pointer;background:var(--panel2);margin-bottom:.3rem}
+  #detail .conn:hover{outline:1px solid var(--accent)}
+  #detail .conn .bar{width:3px;height:26px;border-radius:2px;flex:0 0 3px}
+  #detail .conn .cn{color:var(--text);font-size:12px;font-weight:500;line-height:1.25}
+  #detail .conn .ct{color:var(--dim);font-size:10.5px;line-height:1.3}
+  #detail .empty{color:var(--dim);font-size:12px;font-style:italic}
+  #detail .note{color:var(--dim);font-size:12px;font-style:italic;margin-top:.5rem}
+  .dimmed{opacity:.16}
+  .searchdim{opacity:.12}
+  code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:.05em .3em;border-radius:4px}
+</style>
 </head>
 <body>
-  <div class="header">
-    <div class="header-left">
-      <div class="header-logo">🌿</div>
-      <div><h1>Quinta Vale da Lama</h1><div class="subtitle">Organization Network Map</div></div>
+
+<header>
+  <h1>OrgMap Lab</h1>
+  <div class="field"><label for="ds">Dataset</label><select id="ds"></select></div>
+  <div class="field"><label for="sc">Schema</label><select id="sc"></select></div>
+  <div class="spacer"></div>
+  <div class="field" id="searchWrap"><label for="q">Find</label>
+    <input id="q" type="search" placeholder="name…" autocomplete="off" style="width:150px"></div>
+  <span id="deployBadge" class="kindtag" style="display:none;margin-left:.2rem"></span>
+  <a class="btn" id="guide" href="docs/field-guide.html" target="_blank" rel="noopener"
+     title="How to read these maps, who they are for, and what is still provisional (g)">Field
+     guide <span class="ext">&#8599;</span></a>
+  <button id="tglControls" title="c">Hide controls</button>
+  <button id="tglPanels" title="p">Hide panels</button>
+  <button id="fs" title="f">Fullscreen</button>
+  <button id="reseed">Reset to seed</button>
+  <button id="expN">Export nodes.csv</button>
+  <button id="expE">Export edges.csv</button>
+  <button id="relayout" class="primary">Re-derive layout</button>
+</header>
+
+<div class="banner" id="deployBanner" style="display:none"></div>
+<div class="banner" id="banner"></div>
+
+<main>
+  <aside>
+    <h2>Draw</h2>     <div id="predToggles"></div>
+    <h2>Node types</h2><div id="typeKey"></div>
+    <h2>Colour by</h2> <select id="colorBy" style="width:100%"></select>
+    <h2>Badge by</h2>  <select id="badgeBy" style="width:100%"></select>
+    <h2>Labels</h2>
+    <label class="toggle"><input type="checkbox" id="showLabels" checked> node names</label>
+    <label class="toggle"><input type="checkbox" id="showMutual" checked> thicken mutual pairs</label>
+    <h2>This view</h2> <div id="stats"></div>
+    <h2>Shortcuts</h2>
+    <div style="color:var(--dim);line-height:1.7" id="shortcutList">
+      <b style="color:var(--muted)">m</b> map only ·
+      <b style="color:var(--muted)">p</b> panels ·
+      <b style="color:var(--muted)">c</b> controls<br>
+      <b style="color:var(--muted)">f</b> fullscreen ·
+      <b style="color:var(--muted)">esc</b> bring it all back<br>
+      <b style="color:var(--muted)">g</b> field guide<br>
+      hover to glance, <b style="color:var(--muted)">click</b> for the full record<br>
+      drag the bar above the tabs to resize
     </div>
-    <div class="header-right">
-      <div id="statusBadge" class="status-badge static"><div class="status-dot"></div><span id="statusText">Loading...</span></div>
-      <div class="search-box"><span class="icon">🔍</span><input type="text" id="searchInput" placeholder="Search circles & people..." /></div>
+  </aside>
+
+  <div id="stage">
+    <div id="graphwrap">
+      <svg id="svg"></svg>
+      <div id="detail" role="complementary" aria-hidden="true"></div>
     </div>
-  </div>
-  <!-- Provisional-status notice. The Handbook describes four Circles; this map,
-       generated from Notion, shows nine. Reconciling them is a governance
-       decision, not a data fix, so the map carries the caveat rather than
-       pretending to an authority it does not have. Remove this banner when the
-       reconciliation is adopted. -->
-  <div class="provisional" id="provisionalBanner">
-    <span class="provisional-mark">⚠</span>
-    <span>
-      <strong>Provisional.</strong> This map is generated live from Notion and shows the structure
-      <em>as currently recorded</em>. The Governance Handbook describes four Circles — Anchor,
-      Operations, Casa, Regenerative Farm — and this view does not yet match it. Reconciling the two
-      is on the agenda for the first Governance Meeting. <strong>Until then the Handbook is what
-      holds.</strong>
-      <a href="https://github.com/valedalama/vdl-orgdev/tree/main/handbook/pt">Read the Handbook →</a>
-    </span>
-    <button type="button" class="provisional-close" id="provisionalClose" aria-label="Dismiss">×</button>
-  </div>
-  <div class="main">
-    <div class="graph-container" id="graphContainer">
-      <svg id="graphSvg"></svg>
-      <div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div><div class="loading-text">Loading organization data...</div></div>
-      <div class="legend">
-        <div class="legend-title">Legend</div>
-        <div class="legend-grid">
-          <div class="legend-col">
-            <div class="legend-item"><div class="legend-node" style="border:2px solid var(--circle-l0);background:rgba(59,130,246,.13)"></div>Circle</div>
-            <div class="legend-item"><div class="legend-node" style="border:2px solid var(--role-core);background:rgba(34,211,238,.18)"></div>Core role</div>
-            <div class="legend-item"><div class="legend-node" style="border:2px dashed var(--role-vacant);background:rgba(244,63,94,.14)"></div>Vacant &mdash; unheld</div>
-            <div class="legend-item"><div class="legend-node" style="border:2px solid var(--person);background:rgba(245,158,11,.2)"></div>Person</div>
-          </div>
-          <div class="legend-col">
-            <div class="legend-item" data-filter="holds"><svg width="20" height="3"><line x1="0" y1="1.5" x2="20" y2="1.5" stroke="var(--edge-holds)" stroke-width="2.5"/></svg>Role &rarr; circle</div>
-            <div class="legend-item" data-filter="energizes"><svg width="20" height="3"><line x1="0" y1="1.5" x2="20" y2="1.5" stroke="var(--edge-energizes)" stroke-width="2" stroke-dasharray="3,3"/></svg>Person &rarr; role</div>
-            <div class="legend-item" data-filter="subcircle"><svg width="20" height="3"><line x1="0" y1="1.5" x2="20" y2="1.5" stroke="var(--edge-subcircle)" stroke-width="1.5" stroke-dasharray="8,4"/></svg>Contains</div>
-            <div class="legend-item disabled" data-filter="member"><svg width="20" height="3"><line x1="0" y1="1.5" x2="20" y2="1.5" stroke="var(--edge-member)" stroke-width="1.5" stroke-dasharray="2,4"/></svg>Member (no role)</div>
-            <div class="legend-item" data-filter="defined"><div class="legend-node" style="border:2px solid var(--role-defined);background:rgba(148,163,184,.15)"></div>Defined roles</div>
-          </div>
+    <div id="split" title="drag to resize"></div>
+    <div id="drawer">
+      <div class="tabs">
+        <div class="tab on" data-pane="pNodes">Nodes</div>
+        <div class="tab" data-pane="pEdges">Relationships</div>
+        <div class="tab" data-pane="pVal">Validate <span class="badge zero" id="vcount">0</span></div>
+        <div class="tabtools">
+          <button id="addNode">+ node</button>
+          <button id="addEdge">+ relationship</button>
         </div>
-        <div class="legend-hint">Core roles are always shown. Click a circle to reveal its defined roles · Click legend items to toggle</div>
       </div>
-      <div class="tooltip" id="tooltip">
-        <div class="tooltip-header"><div class="tooltip-dot" id="tooltipDot"></div><span class="tooltip-name" id="tooltipName"></span></div>
-        <div class="tooltip-purpose" id="tooltipPurpose"></div>
-        <div class="tooltip-meta" id="tooltipMeta"></div>
-      </div>
-    </div>
-    <div class="detail-panel" id="detailPanel">
-      <div class="detail-header">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="detail-icon" id="detailIcon">◉</div>
-          <div><div class="detail-name" id="detailName"></div><div class="detail-type" id="detailType"></div></div>
-        </div>
-        <button class="close-btn" id="detailClose">✕</button>
-      </div>
-      <div class="purpose-box" id="purposeBox" style="display:none"><div class="section-label">Purpose</div><div class="purpose-text" id="detailPurpose"></div></div>
-      <div class="section-label" id="connLabel">Connections (0)</div>
-      <div class="conn-list" id="connList"></div>
-      <div id="statsSection" style="display:none"><div class="section-label" style="margin-top:16px">Circle Stats</div><div class="stats-grid" id="statsGrid"></div></div>
+      <div class="pane on" id="pNodes"></div>
+      <div class="pane" id="pEdges"></div>
+      <div class="pane" id="pVal"></div>
     </div>
   </div>
-  <script>
-    const GRAPH_URL="./graph.json";
-    let graphData=null,isLive=false,selectedNode=null,simulation=null,revealedCircle=null;
-    // `member` is off by default: where it appears it is usually two records
-// disagreeing about who is in a circle, not extra information.
-// `defined` is a node-visibility switch, not an edge type — Option B.
-    const activeFilters={holds:true,energizes:true,subcircle:true,member:false,defined:false};
-    const EDGE_STYLES={holds:{color:"#22d3ee",width:2.5,dash:null},energizes:{color:"#f59e0b",width:1.8,dash:"3,3"},subcircle:{color:"#3b82f6",width:1.5,dash:"8,4"},member:{color:"#64748b",width:1.5,dash:"2,4"}};
-    function nodeColor(n){if(n.nodeType==="person")return"#f59e0b";if(n.nodeType==="role")return n.vacant?"#f43f5e":(n.core?"#22d3ee":"#94a3b8");if(n.level===0)return"#3b82f6";if(n.level===1)return"#6366f1";return"#8b5cf6"}
-    function nodeRadius(n){if(n.nodeType==="person")return 15;if(n.nodeType==="role")return n.core?13:10;if(n.level===0)return 32;if(n.level===1)return 26;return 20}
-    async function loadData(){const r=await fetch(GRAPH_URL,{cache:"no-cache",signal:AbortSignal.timeout(8000)});if(!r.ok)throw new Error(`HTTP ${r.status} loading ${GRAPH_URL}`);const d=await r.json();if(!d.nodes||!d.edges)throw new Error("Invalid data shape in graph.json");isLive=true;return d}
-    function renderGraph(data){graphData=data;const container=document.getElementById("graphContainer");const width=container.clientWidth;const height=container.clientHeight;const svg=d3.select("#graphSvg").attr("width",width).attr("height",height);svg.selectAll("*").remove();const defs=svg.append("defs");const glow=defs.append("filter").attr("id","glow").attr("x","-50%").attr("y","-50%").attr("width","200%").attr("height","200%");glow.append("feGaussianBlur").attr("stdDeviation","4").attr("result","coloredBlur");const merge=glow.append("feMerge");merge.append("feMergeNode").attr("in","coloredBlur");merge.append("feMergeNode").attr("in","SourceGraphic");Object.entries(EDGE_STYLES).forEach(([type,style])=>{defs.append("marker").attr("id",`arrow-${type}`).attr("viewBox","0 -5 10 10").attr("refX",20).attr("refY",0).attr("markerWidth",6).attr("markerHeight",6).attr("orient","auto").append("path").attr("d","M0,-4L10,0L0,4").attr("fill",style.color).attr("opacity",.7)});const g=svg.append("g");const zoom=d3.zoom().scaleExtent([.3,3]).on("zoom",e=>g.attr("transform",e.transform));svg.call(zoom);const nodes=data.nodes.map(n=>({...n,radius:nodeRadius(n),color:nodeColor(n)}));const visibleEdges=data.edges.map(e=>({...e,style:EDGE_STYLES[e.type]}));simulation=d3.forceSimulation(nodes).force("link",d3.forceLink(visibleEdges).id(d=>d.id).distance(d=>d.type==="holds"?46:d.type==="subcircle"?155:d.type==="energizes"?112:130).strength(d=>d.type==="holds"?.95:d.type==="subcircle"?.5:d.type==="energizes"?.25:.12)).force("charge",d3.forceManyBody().strength(d=>d.nodeType==="role"?-260:-560).distanceMax(430)).force("center",d3.forceCenter(width/2,height/2)).force("collision",d3.forceCollide().radius(d=>d.radius+(d.nodeType==="role"?9:16))).force("x",d3.forceX(width/2).strength(.04)).force("y",d3.forceY(height/2).strength(.04))
-        .force("depth",d3.forceRadial(d=>d.nodeType==="circle"?d.level*Math.min(width,height)*.19:0,width/2,height/2)
-          .strength(d=>d.nodeType==="circle"?.45:0));const link=g.append("g").selectAll("line").data(visibleEdges).join("line").attr("stroke",d=>d.style.color).attr("stroke-width",d=>d.style.width).attr("stroke-dasharray",d=>d.style.dash).attr("stroke-opacity",.5).attr("marker-end",d=>`url(#arrow-${d.type})`);const node=g.append("g").selectAll("g").data(nodes).join("g").attr("cursor","pointer").call(d3.drag().on("start",(e,d)=>{if(!e.active)simulation.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y}).on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y}).on("end",(e,d)=>{if(!e.active)simulation.alphaTarget(0);d.fx=null;d.fy=null}));node.append("circle").attr("r",d=>d.radius).attr("fill",d=>d.color+(d.nodeType==="circle"?"22":d.vacant?"14":"33")).attr("stroke",d=>d.color).attr("stroke-width",d=>d.nodeType==="circle"?2.5:2).attr("stroke-dasharray",d=>d.vacant?"3,3":null).attr("filter","url(#glow)");node.each(function(d){const el=d3.select(this);if(d.nodeType==="circle"){el.append("circle").attr("r",d.radius*.55).attr("fill","none").attr("stroke",d.color).attr("stroke-width",1.5).attr("stroke-opacity",.5)}else if(d.nodeType==="role"){if(d.core)el.append("circle").attr("r",d.radius*.45).attr("fill","none").attr("stroke",d.color).attr("stroke-width",1.2).attr("stroke-opacity",.55)}else{el.append("circle").attr("r",5).attr("fill",d.color).attr("opacity",.8)}});node.append("text").text(d=>d.name).attr("text-anchor","middle").attr("dy",d=>d.radius+16).attr("fill","#e8edf5").attr("font-size",d=>d.nodeType==="circle"&&d.level<2?"12px":"11px").attr("font-weight",d=>d.nodeType==="circle"&&d.level===0?"700":"500").attr("font-family","'DM Sans',sans-serif").attr("paint-order","stroke").attr("stroke","#0a0f1a").attr("stroke-width",3);node.on("mouseenter",function(event,d){showTooltip(d);d3.select(this).select("circle").transition().duration(200).attr("r",d.radius*1.15);link.transition().duration(200).attr("stroke-opacity",l=>l.source.id===d.id||l.target.id===d.id?.9:.12);node.transition().duration(200).attr("opacity",n=>{if(n.id===d.id)return 1;return visibleEdges.some(e=>(e.source.id===d.id&&e.target.id===n.id)||(e.target.id===d.id&&e.source.id===n.id))?1:.25})});node.on("mouseleave",function(event,d){hideTooltip();d3.select(this).select("circle").transition().duration(200).attr("r",d.radius);link.transition().duration(200).attr("stroke-opacity",.5);node.transition().duration(200).attr("opacity",1)});node.on("click",(event,d)=>{event.stopPropagation();revealedCircle=d.nodeType==="circle"?d.id:(d.nodeType==="role"?(visibleEdges.find(e=>e.type==="holds"&&(e.source.id||e.source)===d.id)||{}).target?.id||null:null);showDetail(d);applyVisibility()});svg.on("click",()=>{revealedCircle=null;hideDetail();applyVisibility()});simulation.on("tick",()=>{link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);node.attr("transform",d=>`translate(${d.x},${d.y})`)});setTimeout(()=>{svg.transition().duration(800).call(zoom.transform,d3.zoomIdentity.translate(width*.05,height*.05).scale(.9))},500);window._graphRefs={node,link,visibleEdges,nodes};
-      // Option B: circles, people and CORE roles are always drawn. A defined
-      // role appears when its circle is selected, or when the legend toggle is on.
-      window._applyVisibility=function(){
-        const inRevealed=(n)=>n.nodeType==="role"&&!n.core&&revealedCircle&&
-          visibleEdges.some(e=>e.type==="holds"&&(e.source.id||e.source)===n.id&&(e.target.id||e.target)===revealedCircle);
-        const nodeShown=(n)=>n.nodeType!=="role"||n.core||activeFilters.defined||inRevealed(n);
-        node.style("display",d=>nodeShown(d)?null:"none");
-        link.style("display",d=>{
-          if(!activeFilters[d.type])return"none";
-          const s=typeof d.source==="object"?d.source:nodes.find(n=>n.id===d.source);
-          const t=typeof d.target==="object"?d.target:nodes.find(n=>n.id===d.target);
-          return s&&t&&nodeShown(s)&&nodeShown(t)?null:"none";
-        });
-      };
-      applyVisibility()}
-    function applyVisibility(){if(window._applyVisibility)window._applyVisibility()}
-    function showTooltip(d){if(selectedNode)return;document.getElementById("tooltipDot").style.background=d.color;document.getElementById("tooltipName").textContent=d.fullName||d.name;document.getElementById("tooltipPurpose").textContent=d.purpose||"";document.getElementById("tooltipPurpose").style.display=d.purpose?"block":"none";document.getElementById("tooltipMeta").textContent=(d.nodeType==="circle"?`Level ${d.level} Circle`:d.nodeType==="role"?(d.vacant?"VACANT \u2014 nobody holds this role":d.roleType):"Team Member")+" \u00b7 Click for details";document.getElementById("tooltip").classList.add("visible")}
-    function hideTooltip(){document.getElementById("tooltip").classList.remove("visible")}
-    function showDetail(d){selectedNode=d;hideTooltip();const panel=document.getElementById("detailPanel");const icon=document.getElementById("detailIcon");icon.style.border=`2.5px solid ${d.color}`;icon.style.background=d.color+"22";icon.textContent=d.nodeType==="circle"?"\u25c9":d.nodeType==="role"?(d.vacant?"\u25cc":"\u25c6"):"\u25cf";document.getElementById("detailName").textContent=d.fullName||d.name;document.getElementById("detailType").textContent=d.nodeType==="circle"?`Level ${d.level} Circle`:d.nodeType==="role"?`${d.roleType}${d.vacant?" \u2014 VACANT":""}`:"Team Member";const purposeBox=document.getElementById("purposeBox");if(d.purpose){purposeBox.style.display="block";purposeBox.style.borderLeft=`3px solid ${d.color}`;document.getElementById("detailPurpose").textContent=d.purpose}else{purposeBox.style.display="none"}const conns=graphData.edges.filter(e=>e.source===d.id||e.target===d.id||(e.source.id||e.source)===d.id||(e.target.id||e.target)===d.id);document.getElementById("connLabel").textContent=`Connections (${conns.length})`;const connList=document.getElementById("connList");connList.innerHTML="";conns.forEach(conn=>{const sourceId=conn.source.id||conn.source;const targetId=conn.target.id||conn.target;const otherId=sourceId===d.id?targetId:sourceId;const other=graphData.nodes.find(n=>n.id===otherId);if(!other)return;const item=document.createElement("div");item.className="conn-item";item.innerHTML=`<div class="conn-bar" style="background:${EDGE_STYLES[conn.type]?.color||'#6366f1'}"></div><div><div class="conn-name">${other.fullName||other.name}</div><div class="conn-type">${sourceId===d.id?"\u2192":"\u2190"} ${conn.label}</div></div>`;item.addEventListener("click",()=>{const otherNode=window._graphRefs?.nodes.find(n=>n.id===otherId);if(otherNode)showDetail(otherNode)});connList.appendChild(item)});const statsSection=document.getElementById("statsSection");if(d.nodeType==="circle"){statsSection.style.display="block";const myRoles=graphData.nodes.filter(n=>n.nodeType==="role"&&graphData.edges.some(e=>e.type==="holds"&&(e.source.id||e.source)===n.id&&(e.target.id||e.target)===d.id));const members=myRoles.length;const vacantHere=myRoles.filter(r=>r.vacant).length;const subCircles=graphData.nodes.filter(n=>{if(n.nodeType!=="circle")return false;return graphData.edges.some(e=>(e.source===n.id||e.source.id===n.id)&&(e.target===d.id||e.target.id===d.id)&&e.type==="subcircle")}).length;document.getElementById("statsGrid").innerHTML=[{label:"Roles",value:members,color:d.color},{label:"Vacant",value:vacantHere,color:vacantHere?"#f43f5e":d.color},{label:"Sub-circles",value:subCircles,color:d.color},{label:"Level",value:d.level,color:d.color}].map(s=>`<div class="stat-box"><div class="stat-value" style="color:${s.color}">${s.value}</div><div class="stat-label">${s.label}</div></div>`).join("")}else if(d.nodeType==="role"){statsSection.style.display="block";const holders=conns.filter(c=>c.type==="energizes").length;document.getElementById("statsGrid").innerHTML=[{label:"Energized by",value:holders||"nobody",color:d.color},{label:"Domains",value:d.domainCount??0,color:d.color},{label:"Accountabilities",value:d.accountabilityCount??0,color:d.color},{label:"Kind",value:d.core?"Core":"Defined",color:d.color}].map(s=>`<div class="stat-box"><div class="stat-value" style="color:${s.color}">${s.value}</div><div class="stat-label">${s.label}</div></div>`).join("")}else{statsSection.style.display="none"}panel.classList.add("open")}
-    function hideDetail(){selectedNode=null;document.getElementById("detailPanel").classList.remove("open")}
-    document.getElementById("detailClose").addEventListener("click",hideDetail);
-    document.getElementById("searchInput").addEventListener("input",function(){const q=this.value.toLowerCase();if(!window._graphRefs)return;window._graphRefs.node.transition().duration(200).attr("opacity",d=>{if(!q)return 1;const name=(d.fullName||d.name||"").toLowerCase();const purpose=(d.purpose||"").toLowerCase();return name.includes(q)||purpose.includes(q)?1:.12})});
-    document.querySelectorAll(".legend-item[data-filter]").forEach(item=>{item.addEventListener("click",function(){const type=this.dataset.filter;activeFilters[type]=!activeFilters[type];this.classList.toggle("disabled",!activeFilters[type]);if(graphData)renderGraph(graphData)})});
-    window.addEventListener("resize",()=>{if(graphData)renderGraph(graphData)});
-    // Dismissible for the session only. Deliberately not persisted: the caveat
-    // is true every time the page loads, and a "don't show again" would let a
-    // reader forget it in exactly the situation where it matters.
-    document.getElementById("provisionalClose").addEventListener("click",()=>{document.getElementById("provisionalBanner").classList.add("hidden");if(graphData)renderGraph(graphData)});
-    (async()=>{const badge=document.getElementById("statusBadge");const statusText=document.getElementById("statusText");let data;try{data=await loadData()}catch(e){console.error("Could not load graph.json:",e.message);badge.classList.remove("live");badge.classList.add("static");statusText.textContent="Could not load org data \u2014 see console";document.getElementById("loadingOverlay").classList.add("hidden");return}badge.classList.remove("static");badge.classList.add("live");statusText.textContent="From Notion \u2014 generated";renderGraph(data);setTimeout(()=>{document.getElementById("loadingOverlay").classList.add("hidden")},600)})();
-  </script>
+</main>
+
+<div id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+/* ------------------------------------------------------------------ config */
+const DATASETS = {
+  barlavento: { label: "Barlavento community (14 orgs)", schemas: ["barlavento-current", "barlavento-vocab"] },
+  vdl:        { label: "Vale da Lama (Holacracy)",       schemas: ["vdl-target", "vdl-doublelink", "vdl-current"] }
+};
+// The renderer must not know what columns an organisation keeps. These are the
+// only ones it relies on structurally; everything else is discovered from the
+// file it loaded and from the schema's declared attributes. Adding a third
+// organisation must never mean editing this file.
+const NODE_KEYS = ["id", "name", "nodeType"];
+const EDGE_KEYS = ["subject", "predicate", "object"];
+
+// Union of: the structural keys, the schema's attributes, and whatever columns
+// the loaded file actually carried — so an export never silently drops a column
+// the schema has not heard of.
+function colsFor(kind){
+  const base = kind === "nodes" ? NODE_KEYS : EDGE_KEYS;
+  const rows = kind === "nodes" ? data.nodes : data.edges;
+  const declared = kind === "nodes" && schema
+    ? (schema.attributes || []).map(a => a.key) : [];
+  const seen = rows.length ? Object.keys(rows[0]) : [];
+  return [...new Set([...base, ...declared, ...seen])];
+}
+
+/* ------------------------------------------------------------------- state */
+let schema = null, data = { nodes: [], edges: [] }, dsId = "barlavento", scId = "barlavento-current";
+let visible = {}, sim = null, issues = [];
+let DATASET_DEFS = DATASETS;   // replaced by manifest.datasets when one exists
+
+// ── The cut between the two products. A published map is for reading; the
+// workbench is for shaping. Same file, and the mode decides which one you get.
+//   ?mode=view       force the read-only map
+//   ?mode=workbench  force the editor
+//   neither          the deployment's default, from manifest.json, else workbench
+const modeParam = new URLSearchParams(location.search).get("mode");
+let READ_ONLY = modeParam === "view";
+let lastProjection = { nodes: [], links: [] };   // what is currently on screen
+let lastSel = { node: null, link: null };        // d3 selections, for focus dimming
+
+/* --------------------------------------------------------------- csv utils */
+function parseCSV(text){
+  const rows = []; let row = [], field = "", q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){
+      if (c === '"'){ if (text[i+1] === '"'){ field += '"'; i++; } else q = false; }
+      else field += c;
+    } else if (c === '"') q = true;
+    else if (c === ','){ row.push(field); field = ""; }
+    else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ""; }
+    else if (c !== '\r') field += c;
+  }
+  if (field.length || row.length){ row.push(field); rows.push(row); }
+  if (!rows.length) return [];
+  const head = rows.shift();
+  return rows.filter(r => r.some(v => v !== "")).map(r => {
+    const o = {}; head.forEach((h, i) => o[h] = (r[i] === undefined ? "" : r[i])); return o;
+  });
+}
+function toCSV(cols, rows){
+  const esc = v => /[",\n]/.test(v == null ? "" : v) ? '"' + String(v).replace(/"/g, '""') + '"' : (v == null ? "" : v);
+  return [cols.join(",")].concat(rows.map(r => cols.map(c => esc(r[c])).join(","))).join("\n") + "\n";
+}
+function download(name, text){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type: "text/csv"}));
+  a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ------------------------------------------------------------ load / store */
+const storeKey = ds => "orgmap-lab:" + ds;
+
+/* A cache written before a column existed would silently hide that column's data,
+   so anything missing a declared field is treated as stale and re-seeded. */
+function cacheUsable(d){
+  if (!d || !Array.isArray(d.nodes) || !Array.isArray(d.edges)) return false;
+  const has = (row, cols) => row && cols.every(c => c in row);
+  if (d.edges.length && !has(d.edges[0], EDGE_KEYS)) return false;
+  if (d.nodes.length && !has(d.nodes[0], NODE_KEYS)) return false;
+  return true;
+}
+
+// Kept deliberately narrow: source shapes, not organisations. build-graph.mjs
+// already emits {nodes:[{id,name,nodeType,...}], edges:[{source,type,target}]},
+// so the adapter is a rename, not a translation.
+async function fetchGraph(src){
+  const r = await fetch(src.path, { cache: "no-store" });
+  if (!r.ok) throw new Error("graph source " + r.status + " at " + src.path);
+  const g = await r.json();
+  return {
+    nodes: (g.nodes || []).map(n => ({ ...n })),
+    edges: (g.edges || []).map(e => ({
+      ...e,
+      subject: e.source, predicate: e.type, object: e.target,
+      note: e.label || "",
+    })),
+  };
+}
+
+async function fetchCsvPair(ds){
+  const [n, e] = await Promise.all([
+    fetch("data/" + ds + "/nodes.csv", { cache: "no-store" }).then(r => r.text()),
+    fetch("data/" + ds + "/edges.csv", { cache: "no-store" }).then(r => r.text()),
+  ]);
+  return { nodes: parseCSV(n), edges: parseCSV(e) };
+}
+
+async function loadDataset(ds, forceSeed){
+  if (!forceSeed && !READ_ONLY){
+    const cached = localStorage.getItem(storeKey(ds));
+    if (cached){
+      try {
+        const parsed = JSON.parse(cached);
+        if (cacheUsable(parsed)) return parsed;
+        console.info("orgmap-lab: cached " + ds + " predates the current columns; re-seeding.");
+      } catch(e){}
+    }
+  }
+  const src = (DATASET_DEFS[ds] || {}).source;
+  const fresh = src && src.format === "graph" ? await fetchGraph(src) : await fetchCsvPair(ds);
+  if (!READ_ONLY) localStorage.setItem(storeKey(ds), JSON.stringify(fresh));
+  return fresh;
+}
+// In read-only mode this is the whole story: the app never writes. Not disabled
+// buttons — no write path at all, so a published map cannot accumulate state.
+const persist = () => {
+  if (READ_ONLY) return;
+  localStorage.setItem(storeKey(dsId), JSON.stringify(data));
+};
+const loadSchema = id =>
+  fetch("schemas/" + id + ".json", { cache: "no-store" }).then(r => r.json());
+
+/* -------------------------------------------------------------- projection */
+const predOf = id => schema.predicates.find(p => p.id === id) || null;
+const typeOf = id => schema.nodeTypes.find(t => t.id === id) || null;
+const matches = (list, t) => list.includes("*") || list.includes(t);
+
+/** Apply the schema to the raw rows: absorb attribute-kind predicates onto the nodes,
+ *  keep only edge-kind predicates that are switched on. Same file, different view. */
+function project(){
+  const nodes = data.nodes.map(n => Object.assign({}, n));
+  const byId = new Map(nodes.map(n => [n.id, n]));
+  const absorbed = [];
+
+  data.edges.forEach(e => {
+    const p = predOf(e.predicate);
+    if (!p || p.kind !== "attribute") return;
+    absorbed.push(e);
+    const a = p.absorbInto;
+    if (!a || a.value == null) return;              // already carried by the node itself
+    [byId.get(e.subject), byId.get(e.object)].forEach(n => {
+      if (n && !n[a.key]) n[a.key] = a.value;
+    });
+  });
+
+  const raw = data.edges.filter(e => {
+    const p = predOf(e.predicate);
+    return p && p.kind === "edge" && visible[p.id] && byId.has(e.subject) && byId.has(e.object)
+           && e.subject !== e.object;
+  });
+
+  // mutuality: the same predicate declared from both sides
+  const seen = new Map();
+  raw.forEach(e => {
+    const key = [e.subject, e.object].sort().join(" ") + " " + e.predicate;
+    if (seen.has(key)){
+      // the reciprocal row still gets a say: its provenance, its doubt, its note
+      const l = seen.get(key);
+      l.mutual = true;
+      l.provs.add(e.source || "unrecorded");
+      if (e.confirmed === "false") l.confirmed = false;
+      if (e.note && !l.note) l.note = e.note;
+      if (e.via && !l.via) l.via = e.via;
+    } else seen.set(key, { source: byId.get(e.subject), target: byId.get(e.object),
+                           predicate: e.predicate, mutual: false,
+                           confirmed: e.confirmed !== "false", note: e.note, via: e.via,
+                           provs: new Set([e.source || "unrecorded"]) });
+  });
+  const links = Array.from(seen.values());
+
+  // A channel is a derived edge: role -> its circle -> that circle's parent,
+  // collapsed into one arc between the two circles that the role sits on. It is
+  // composed at render time from predicates already in the data, never stored.
+  const channels = [];
+  (schema.channels || []).forEach(ch => {
+    const arcFor = (rt) => (ch.arcs || []).find(a => a.roleType === rt);
+    nodes.forEach(r => {
+      const spec = arcFor(r.roleType);
+      if (!spec) return;
+      const toCircle = data.edges.find(e => e.predicate === ch.roleToCircle && e.subject === r.id);
+      if (!toCircle) return;
+      const child = byId.get(toCircle.object);
+      const toParent = data.edges.find(e => e.predicate === ch.childToParent && e.subject === toCircle.object);
+      if (!child || !toParent) return;              // no parent: the anchor circle, correctly no arc
+      const parent = byId.get(toParent.object);
+      if (!parent) return;
+      channels.push({ role: r, child, parent, spec, channelId: ch.id,
+                      vacant: !data.edges.some(e => e.object === r.id && e.predicate !== ch.roleToCircle) });
+    });
+  });
+
+  // A seat the schema expects and no record provides is drawn as a ghost. It was
+  // the invisible state: absent draws as nothing, and nothing reads as fine.
+  (schema.channels || []).forEach(ch => {
+    data.edges.filter(e => e.predicate === ch.childToParent).forEach(sub => {
+      const child = byId.get(sub.subject), parent = byId.get(sub.object);
+      if (!child || !parent) return;
+      (ch.arcs || []).forEach(spec => {
+        const exists = channels.some(c => c.child.id === child.id && c.spec.roleType === spec.roleType);
+        if (exists) return;
+        const ghost = { id: "ghost-" + child.id + "-" + spec.roleType.replace(/\W/g, ""),
+                        name: spec.roleType, nodeType: "role", roleType: spec.roleType,
+                        ghost: true, vacant: true };
+        nodes.push(ghost);
+        channels.push({ role: ghost, child, parent, spec, channelId: ch.id, vacant: true, absent: true });
+      });
+    });
+  });
+
+  // A channel-focused view draws only what the channel is made of: the circles
+  // it joins and the roles riding it. Everything else is true but not the point.
+  let shown = nodes;
+  if (schema.focusChannel) {
+    const keep = new Set();
+    channels.forEach(c => { keep.add(c.role.id); keep.add(c.child.id); keep.add(c.parent.id); });
+    nodes.forEach(n => { if (n.nodeType === "circle") keep.add(n.id); });
+    shown = nodes.filter(n => keep.has(n.id));
+  }
+
+  nodes.forEach(n => n.deg = 0);
+  links.forEach(l => { l.source.deg++; l.target.deg++; });
+  const drawn = new Set();
+  links.forEach(l => { drawn.add(l.source.id); drawn.add(l.target.id); });
+  const vis = new Set(shown.map(n => n.id));
+  return { nodes: shown, links: links.filter(l => vis.has(l.source.id) && vis.has(l.target.id)),
+           channels, absorbed, isolated: shown.filter(n => !drawn.has(n.id)).length };
+}
+
+/* -------------------------------------------------------------- validation */
+function validate(){
+  const out = [], ids = new Set(data.nodes.map(n => n.id)), seenId = new Set(), seenEdge = new Set();
+
+  data.nodes.forEach((n, i) => {
+    if (!n.id) out.push({ lvl: "err", rule: "node.id-required", where: "node row " + (i + 1),
+                          msg: "Every node needs an id — it is the key relationships point at." });
+    else if (seenId.has(n.id)) out.push({ lvl: "err", rule: "node.id-unique", where: n.id,
+                          msg: "Duplicate node id." });
+    seenId.add(n.id);
+    if (!typeOf(n.nodeType)) out.push({ lvl: "err", rule: "node.type-in-vocabulary", where: n.id,
+      msg: "Node type <code>" + (n.nodeType || "(blank)") + "</code> is not in this schema. Allowed: " +
+           schema.nodeTypes.map(t => "<code>" + t.id + "</code>").join(", ") + "." });
+    schema.attributes.forEach(a => {
+      const v = n[a.key] == null ? "" : n[a.key];
+      if (a.control === "enum" && a.values && a.values.indexOf(v) === -1){
+        out.push({ lvl: "err", rule: "node.attribute-in-vocabulary", where: n.id + " . " + a.key,
+          msg: "<code>" + v + "</code> is not an allowed value for <b>" + a.label + "</b>. Allowed: " +
+               a.values.filter(Boolean).map(x => "<code>" + x + "</code>").join(", ") + "." });
+      }
+    });
+  });
+
+  data.edges.forEach(e => {
+    const where = (e.subject || "?") + " -> " + (e.object || "?");
+    const p = predOf(e.predicate);
+    if (!p){
+      out.push({ lvl: "err", rule: "edge.predicate-in-vocabulary", where,
+        msg: "Predicate <code>" + (e.predicate || "(blank)") + "</code> is not in this schema. Under <b>" +
+             schema.label + "</b> the allowed predicates are " +
+             schema.predicates.map(x => "<code>" + x.label + "</code>").join(", ") + "." });
+      return;
+    }
+    if (p.kind === "attribute"){
+      out.push({ lvl: "info", rule: "edge.absorbed-as-attribute", where,
+        msg: "<b>" + p.label + "</b> is an attribute in this schema, not a relationship — this row is " +
+             "absorbed onto the nodes rather than drawn. " + (p.rationale || "") });
+      return;
+    }
+    if (p.deprecated){
+      out.push({ lvl: "warn", rule: "edge.predicate-deprecated", where,
+        msg: "<b>" + p.label + "</b>: " + p.deprecated.message + " <i>(" + p.deprecated.issue + ")</i>" });
+    }
+    if (!ids.has(e.subject)) out.push({ lvl: "err", rule: "edge.endpoint-exists", where,
+      msg: "Subject <code>" + e.subject + "</code> is not a node in this dataset." });
+    if (!ids.has(e.object)) out.push({ lvl: "err", rule: "edge.endpoint-exists", where,
+      msg: "Object <code>" + e.object + "</code> is not a node in this dataset." });
+    if (e.subject && e.subject === e.object) out.push({ lvl: "err", rule: "edge.no-self-loop", where,
+      msg: "An organisation cannot declare a relationship with itself." });
+
+    const s = data.nodes.find(n => n.id === e.subject), o = data.nodes.find(n => n.id === e.object);
+    if (s && !matches(p.subjectTypes, s.nodeType)) out.push({ lvl: "err", rule: "edge.subject-type", where,
+      msg: "<b>" + p.label + "</b> may only start at " +
+           p.subjectTypes.map(t => "<code>" + t + "</code>").join(" / ") + ", but <code>" + e.subject +
+           "</code> is a <code>" + s.nodeType + "</code>." });
+    if (o && !matches(p.objectTypes, o.nodeType)) out.push({ lvl: "err", rule: "edge.object-type", where,
+      msg: "<b>" + p.label + "</b> may only point at " +
+           p.objectTypes.map(t => "<code>" + t + "</code>").join(" / ") + ", but <code>" + e.object +
+           "</code> is a <code>" + o.nodeType + "</code>." });
+
+    const key = [e.subject, e.predicate, e.object].join(" ");
+    if (seenEdge.has(key)) out.push({ lvl: "warn", rule: "edge.duplicate", where,
+      msg: "This exact claim is recorded more than once." });
+    seenEdge.add(key);
+  });
+
+  return out;
+}
+
+/* ----------------------------------------------------------------- palette */
+const PALETTE = ["#3b82f6","#2dd4bf","#f5a623","#a855f7","#e4585f","#10b981","#6366f1","#eab308",
+                 "#ec4899","#14b8a6","#f97316","#8b5cf6"];
+function scaleFor(key){
+  const vals = Array.from(new Set(data.nodes.map(n => n[key]).filter(Boolean))).sort();
+  const m = new Map(vals.map((v, i) => [v, PALETTE[i % PALETTE.length]]));
+  return v => m.get(v) || "#5a6a8c";
+}
+
+/* ----------------------------------------------------------------- tooltip */
+const tipEl = document.getElementById("tip");
+function showTip(html, ev){
+  if (selected) return;              // the panel is already saying more than this would
+  tipEl.innerHTML = html;
+  tipEl.classList.add("on");
+  tipEl.setAttribute("aria-hidden", "false");
+  moveTip(ev);
+}
+function moveTip(ev){
+  const pad = 14, r = tipEl.getBoundingClientRect();
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if (x + r.width  > window.innerWidth  - 8) x = ev.clientX - r.width  - pad;
+  if (y + r.height > window.innerHeight - 8) y = ev.clientY - r.height - pad;
+  tipEl.style.left = Math.max(8, x) + "px";
+  tipEl.style.top  = Math.max(8, y) + "px";
+}
+function hideTip(){ tipEl.classList.remove("on"); tipEl.setAttribute("aria-hidden", "true"); }
+const enc = v => String(v == null ? "" : v)
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Set by render() so the generic tooltip can speak about a bead.
+let beadInfo = null;
+
+function beadTip(d){
+  const b = beadInfo, st = b.state(d), who = b.holder(d), c = b.chan(d);
+  const chip = st === "active"  ? '<span class="chip ok">ratified ' + enc(d[b.ratField]) + "</span>"
+             : st === "pending" ? '<span class="chip warn">no ratification on record</span>'
+             : st === "vacant"  ? '<span class="chip warn">seat empty</span>'
+             :                    '<span class="chip warn">no role record &mdash; never created</span>';
+  return '<div class="t-head">' + enc(who ? (who.fullName || who.name) : d.roleType) + "</div>" +
+    '<div class="t-pred">' + enc(d.roleType) +
+      (c ? " &middot; " + enc(c.child.name) : "") + "</div>" +
+    (who && (who.fullName || who.name) !== d.roleType
+      ? '<dl><dt>role</dt><dd>' + enc(d.roleType) + "</dd>" +
+        (c ? "<dt>circle</dt><dd>" + enc(c.child.name) + "</dd><dt>links to</dt><dd>" +
+             enc(c.parent.name) + "</dd>" : "") +
+        (d[b.reviewField] ? "<dt>review due</dt><dd>" + enc(d[b.reviewField]) + "</dd>" : "") + "</dl>"
+      : (c ? '<dl><dt>circle</dt><dd>' + enc(c.child.name) + "</dd><dt>links to</dt><dd>" +
+             enc(c.parent.name) + "</dd></dl>" : "")) +
+    '<div class="chips">' + chip + "</div>" +
+    '<div class="t-note">' + enc(b.arcLabel(d)) + "</div>";
+}
+
+function nodeTip(d){
+  if (beadInfo && beadInfo.isBead(d)) return beadTip(d);
+  const rows = schema.attributes
+    .filter(a => d[a.key])
+    .map(a => "<dt>" + enc(a.label) + "</dt><dd>" + enc(d[a.key]) + "</dd>").join("");
+  const t = typeOf(d.nodeType);
+  return '<div class="t-head">' + enc(d.name) + "</div>" +
+    '<div class="t-pred">' + enc(t ? t.label : d.nodeType) + " &middot; " +
+      (d.deg ? d.deg + (d.deg === 1 ? " line drawn" : " lines drawn") : "no line in this view") +
+    "</div>" + (rows ? "<dl>" + rows + "</dl>" : "") +
+    '<div class="t-note">click for the full record</div>';
+}
+/* ----------------------------------------------------------- detail panel */
+/* The hover readout is a glance. This is the whole record for one thing, it
+   stays open while you look elsewhere, and it walks: click a connection to
+   move to the other end. */
+const detailEl = document.getElementById("detail");
+let selected = null;                       // {kind:"node"|"edge", ref}
+
+function openDetail(kind, ref){
+  selected = { kind, ref };
+  hideTip();
+  detailEl.innerHTML = kind === "node" ? nodeDetail(ref) : edgeDetail(ref);
+  detailEl.classList.add("open");
+  detailEl.setAttribute("aria-hidden", "false");
+  detailEl.querySelector(".d-close").onclick = closeDetail;
+  detailEl.querySelectorAll("[data-goto]").forEach(el => el.onclick = () => {
+    const n = lastProjection.nodes.find(x => x.id === el.dataset.goto);
+    if (n) openDetail("node", n);
+  });
+  applyFocus();
+}
+function closeDetail(){
+  selected = null;
+  detailEl.classList.remove("open");
+  detailEl.setAttribute("aria-hidden", "true");
+  applyFocus();
+}
+/* Dim what the selection is not about, so the panel and the map agree. */
+function applyFocus(){
+  if (!lastSel.node) return;
+  const on = selected;
+  lastSel.node.classed("dimmed", d => {
+    if (!on) return false;
+    if (on.kind === "node") return d.id !== on.ref.id && !lastProjection.links.some(l =>
+      (l.source.id === on.ref.id && l.target.id === d.id) ||
+      (l.target.id === on.ref.id && l.source.id === d.id));
+    return d.id !== on.ref.source.id && d.id !== on.ref.target.id;
+  });
+  lastSel.link.classed("dimmed", l => {
+    if (!on) return false;
+    if (on.kind === "node") return l.source.id !== on.ref.id && l.target.id !== on.ref.id;
+    return l !== on.ref;
+  });
+}
+
+function nodeDetail(d){
+  const t = typeOf(d.nodeType) || { color: "#5a6a8c", label: d.nodeType };
+  const attrs = schema.attributes.filter(a => d[a.key])
+    .map(a => "<dt>" + enc(a.label) + "</dt><dd>" + enc(d[a.key]) + "</dd>").join("");
+  const conns = lastProjection.links.filter(l => l.source.id === d.id || l.target.id === d.id);
+  const rows = data.edges.filter(e => e.subject === d.id || e.object === d.id).length;
+
+  const list = conns.length ? conns.map(l => {
+    const other = l.source.id === d.id ? l.target : l.source;
+    const p = predOf(l.predicate);
+    const dir = p.directed ? (l.source.id === d.id ? "&rarr;" : "&larr;") : "&harr;";
+    return '<div class="conn" data-goto="' + enc(other.id) + '">' +
+      '<span class="bar" style="background:' + p.style.color + '"></span><span>' +
+      '<span class="cn">' + enc(other.name) + "</span><br>" +
+      '<span class="ct">' + dir + " " + enc(p.label) +
+      (l.via ? " &middot; " + enc(l.via) : "") + "</span></span></div>";
+  }).join("") : '<div class="empty">No line of a kind this view draws.</div>';
+
+  return '<div class="d-top"><span class="d-mark" style="background:' + t.color +
+      '33;border:2px solid ' + t.color + '"></span><span><span class="d-name">' + enc(d.name) +
+      '</span><span class="d-kind">' + enc(t.label) + "</span></span>" +
+      '<button class="d-close" title="close (esc)">&times;</button></div>' +
+    '<dl><dt>id</dt><dd>' + enc(d.id) + "</dd>" + attrs + "</dl>" +
+    "<h3>In the data</h3><dl>" +
+      "<dt>rows naming it</dt><dd>" + rows + "</dd>" +
+      "<dt>drawn in this view</dt><dd>" + conns.length + "</dd></dl>" +
+    "<h3>Connections (" + conns.length + ")</h3>" + list;
+}
+
+function edgeDetail(d){
+  const p = predOf(d.predicate);
+  const chips = [];
+  chips.push(d.mutual ? '<span class="chip ok">declared by both</span>'
+                      : '<span class="chip">declared by one side</span>');
+  if (!d.confirmed) chips.push('<span class="chip warn">candidate &mdash; unconfirmed</span>');
+  if (p.deprecated) chips.push('<span class="chip warn">flagged by this schema</span>');
+  Array.from(d.provs).sort().forEach(s => chips.push('<span class="chip">' + enc(s) + "</span>"));
+
+  // Who the relationship runs through. Recorded here; deliberately absent from the
+  // published claim below, which is the distinction the panel exists to make visible.
+  const via = d.via ? '<h3>Runs through</h3><div class="via"><div class="who">' + enc(d.via) +
+      '</div><div class="cav">Recorded locally, on this row. It is <b>not</b> part of the ' +
+      'published claim &mdash; "we share personnel with X" is the organisation\'s to say; ' +
+      "naming the individual is theirs.</div></div>" : "";
+
+  const publishable = /^https?:/.test(p.id) && p.kind === "edge";
+  const claim = publishable
+    ? "<h3>What this publishes</h3>" +
+      "<pre>{\n  &quot;predicate_url&quot;: &quot;" + enc(p.id) + "&quot;,\n" +
+      "  &quot;object_url&quot;:    " + (d.target.website
+          ? "&quot;" + enc(d.target.website) + "&quot;"
+          : "<i>&mdash; no primary URL published yet</i>") + "\n}</pre>" +
+      '<div class="note">The entry ' + enc(d.source.name) +
+      " would carry in its own profile. Two fields, and no third.</div>"
+    : "";
+
+  return '<div class="d-top"><span class="d-rule" style="border-top-color:' + p.style.color +
+      ';border-top-style:' + (p.style.dash ? "dashed" : "solid") +
+      '"></span><span><span class="d-name">' + enc(p.label) +
+      '</span><span class="d-kind">relationship</span></span>' +
+      '<button class="d-close" title="close (esc)">&times;</button></div>' +
+    "<h3>Between</h3>" +
+    '<div class="conn" data-goto="' + enc(d.source.id) + '"><span class="bar" style="background:' +
+      p.style.color + '"></span><span><span class="cn">' + enc(d.source.name) +
+      '</span><br><span class="ct">subject &mdash; the one making the claim</span></span></div>' +
+    '<div class="conn" data-goto="' + enc(d.target.id) + '"><span class="bar" style="background:' +
+      p.style.color + '"></span><span><span class="cn">' + enc(d.target.name) +
+      '</span><br><span class="ct">object</span></span></div>' +
+    '<div class="chips">' + chips.join("") + "</div>" +
+    via +
+    "<h3>Predicate</h3><dl><dt>id</dt><dd>" + enc(p.id) + "</dd>" +
+      (p.subjectTypes ? "<dt>from</dt><dd>" + enc(p.subjectTypes.join(", ")) + "</dd>" : "") +
+      (p.objectTypes ? "<dt>to</dt><dd>" + enc(p.objectTypes.join(", ")) + "</dd>" : "") + "</dl>" +
+    (d.note ? '<div class="note">' + enc(d.note) + "</div>" : "") +
+    (p.deprecated ? '<div class="note">' + enc(p.deprecated.message) + "</div>" : "") +
+    claim;
+}
+
+function edgeTip(d){
+  const p = predOf(d.predicate);
+  const chips = [];
+  chips.push(d.mutual
+    ? '<span class="chip ok">declared by both</span>'
+    : '<span class="chip">declared by ' + enc(d.source.name) + "</span>");
+  if (!d.confirmed) chips.push('<span class="chip warn">candidate &mdash; unconfirmed</span>');
+  if (p.deprecated) chips.push('<span class="chip warn">flagged by this schema</span>');
+  Array.from(d.provs).sort().forEach(s => chips.push('<span class="chip">' + enc(s) + "</span>"));
+  return '<div class="t-head">' + enc(d.source.name) + " &rarr; " + enc(d.target.name) + "</div>" +
+    '<div class="t-pred"><b>' + enc(p.label) + "</b></div>" +
+    '<dl><dt>predicate</dt><dd>' + enc(p.id) + "</dd></dl>" +
+    '<div class="chips">' + chips.join("") + "</div>" +
+    (d.via ? '<div class="t-note">through ' + enc(d.via) + "</div>" : "") +
+    (d.note ? '<div class="t-note">' + enc(d.note) + "</div>" : "") +
+    (p.deprecated ? '<div class="t-note">' + enc(p.deprecated.message) + "</div>" : "") +
+    '<div class="t-note">click for the full record</div>';
+}
+
+/* ------------------------------------------------------------------ render */
+function render(keepPositions){
+  const proj = project();
+  const nodes = proj.nodes, links = proj.links;
+  lastProjection = proj;
+  // a selection cannot survive a re-projection: the objects are new ones
+  if (selected) closeDetail();
+  const svgEl = document.getElementById("svg");
+  const W = svgEl.clientWidth, H = svgEl.clientHeight;
+  lastArea = W * H;
+  const colorKey = document.getElementById("colorBy").value;
+  const badgeKey = document.getElementById("badgeBy").value;
+  const scale = colorKey === "__type" ? null : scaleFor(colorKey);
+  const colorOf = n => arcColour.has(n.id) ? arcColour.get(n.id)
+    : colorKey === "__type" ? ((typeOf(n.nodeType) || {}).color || "#5a6a8c")
+    : scale(n[colorKey]);
+  const radiusOf = n => rideIds.has(n.id) ? 14 : ((typeOf(n.nodeType) || {}).r || 18);
+  const markerId = pid => "arw-" + pid.replace(/[^a-zA-Z0-9]/g, "");
+
+  if (sim) sim.stop();
+  nodes.forEach(n => { n.fx = null; n.fy = null; });
+  const svg = d3.select(svgEl); svg.selectAll("*").remove();
+  hideTip();
+  const g = svg.append("g");
+  svg.call(d3.zoom().scaleExtent([.25, 3])
+    .on("start", hideTip)
+    .on("zoom", ev => g.attr("transform", ev.transform)));
+
+  const defs = svg.append("defs");
+  schema.predicates.filter(p => p.kind === "edge").forEach(p => {
+    defs.append("marker").attr("id", markerId(p.id))
+      .attr("viewBox", "0 -5 10 10").attr("refX", 10).attr("refY", 0)
+      .attr("markerWidth", 5).attr("markerHeight", 5).attr("orient", "auto")
+      .append("path").attr("d", "M0,-4L9,0L0,4").attr("fill", p.style.color).attr("opacity", .8);
+  });
+
+  // Channel arcs sit under everything: they are the structure, not an annotation.
+  const chans = proj.channels || [];
+  const arc = g.append("g").selectAll("path").data(chans).join("path")
+    .attr("fill", "none")
+    .attr("stroke", d => d.spec.style.color)
+    .attr("stroke-width", d => d.spec.style.width)
+    .attr("stroke-opacity", d => d.absent ? .28 : d.vacant ? .5 : .85)
+    // a vacant half is drawn broken — a circle with no Rep has no way to speak upward
+    .attr("stroke-dasharray", d => d.absent ? "1,7" : d.vacant ? "2,9" : d.spec.style.dash)
+    .attr("marker-end", d => "url(#chan-" + d.spec.direction + "-" + markerId(d.channelId + d.spec.roleType) + ")")
+    .style("cursor", "help")
+    .on("mouseenter", (ev, d) => showTip(
+      '<div class="t-head">' + enc(d.parent.name) + (d.spec.direction === "down" ? " &rarr; " : " &larr; ") +
+      enc(d.child.name) + "</div>" +
+      '<div class="t-pred"><b>' + enc(d.spec.label) + "</b></div>" +
+      '<div class="chips">' + (function () {
+        const st = beadState(d.role), who = holderOf.get(d.role.id);
+        if (st === "absent") return '<span class="chip warn">NO RECORD &mdash; this seat was never created</span>';
+        if (st === "vacant") return '<span class="chip warn">VACANT &mdash; the seat exists, nobody is in it</span>';
+        if (st === "pending") return '<span class="chip">' + enc(who.name) +
+          '</span><span class="chip warn">no ratification on record</span>';
+        return '<span class="chip ok">' + enc(who.name) + '</span><span class="chip ok">ratified ' +
+          enc(d.role[ratField]) + "</span>";
+      })() + "</div>" +
+      (d.vacant ? '<div class="t-note">' + enc(d.child.name) +
+        " has no one carrying this direction. The link between it and " + enc(d.parent.name) +
+        " runs one way only.</div>" : ""), ev))
+    .on("mousemove", moveTip).on("mouseleave", hideTip);
+
+  chans.forEach(d => {
+    const id = "chan-" + d.spec.direction + "-" + markerId(d.channelId + d.spec.roleType);
+    if (defs.select("#" + id).size()) return;
+    defs.append("marker").attr("id", id).attr("viewBox", "0 -5 10 10")
+      .attr("refX", 9).attr("refY", 0).attr("markerWidth", 5).attr("markerHeight", 5)
+      .attr("orient", "auto").append("path").attr("d", "M0,-4L9,0L0,4")
+      .attr("fill", d.spec.style.color).attr("opacity", .9);
+  });
+
+  // Channel roles are geometry, not bodies: excluded from the simulation below so
+  // they exert no force and receive none. Their x/y is computed each tick instead.
+  const rideIds = new Set(chans.map(c => c.role.id));
+  const arcColour = new Map(chans.map(c => [c.role.id, c.spec.style.color]));
+
+  // Four states, not two. "Absent" and "vacant" are different failures, and
+  // "pending" is the one that says governance has not caught up with practice.
+  const ratField = (schema.beads || {}).ratifiedField || "ratifiedOn";
+  const holderOf = new Map();
+  data.edges.forEach(e => {
+    if (rideIds.has(e.object)) {
+      const p = data.nodes.find(n => n.id === e.subject);
+      if (p && p.nodeType === "person") holderOf.set(e.object, p);
+    }
+  });
+  const beadState = (r) => {
+    if (r.ghost) return "absent";
+    const who = holderOf.get(r.id);
+    if (!who) return "vacant";
+    return r[ratField] ? "active" : "pending";
+  };
+  const initials = (nm) => (nm || "?").split(/\s+/).filter(Boolean)
+    .slice(0, 2).map(w => w[0].toUpperCase()).join("");
+
+  beadInfo = {
+    isBead: (n) => rideIds.has(n.id),
+    state: beadState,
+    holder: (n) => holderOf.get(n.id),
+    chan: (n) => chans.find(c => c.role.id === n.id),
+    arcLabel: (n) => { const c = chans.find(x => x.role.id === n.id); return c ? c.spec.label : ""; },
+    ratField, reviewField: "reviewDate",
+  };
+
+  const thicken = document.getElementById("showMutual").checked;
+  const link = g.append("g").selectAll("line").data(links).join("line")
+    .attr("stroke", d => predOf(d.predicate).style.color)
+    .attr("stroke-width", d => {
+      const w = predOf(d.predicate).style.width;
+      return d.mutual && thicken ? w * 1.9 : w;
+    })
+    .attr("stroke-dasharray", d => d.confirmed ? predOf(d.predicate).style.dash : "2,5")
+    .attr("stroke-opacity", d => d.confirmed ? .75 : .45)
+    .attr("marker-end", d => predOf(d.predicate).directed ? "url(#" + markerId(d.predicate) + ")" : null)
+    .attr("pointer-events", "none");
+
+  // A 2px stroke is almost impossible to hover. Every line gets an invisible
+  // 18px-wide twin that does the catching, sitting above the drawn lines but
+  // below the nodes so a node always wins the pointer.
+  const hit = g.append("g").selectAll("line").data(links).join("line")
+    .attr("stroke", "transparent").attr("stroke-width", 18)
+    .attr("pointer-events", "stroke").style("cursor", "help")
+    .on("mouseenter", (ev, d) => showTip(edgeTip(d), ev))
+    .on("mousemove", moveTip)
+    .on("mouseleave", hideTip)
+    .on("click", (ev, d) => { ev.stopPropagation(); openDetail("edge", d); });
+
+  const node = g.append("g").selectAll("g").data(nodes).join("g")
+    .style("cursor", d => rideIds.has(d.id) ? "help" : "grab")
+    .on("mouseenter", (ev, d) => showTip(nodeTip(d), ev))
+    .on("mousemove", moveTip)
+    .on("mouseleave", hideTip)
+    .on("click", (ev, d) => { ev.stopPropagation(); openDetail("node", d); })
+    .call(d3.drag()
+      .on("start", (ev, d) => {
+        hideTip();
+        if (!ev.active) sim.alphaTarget(.3).restart(); d.fx = d.x; d.fy = d.y;
+      })
+      .on("drag",  (ev, d) => { d.fx = ev.x; d.fy = ev.y; })
+      .on("end",   (ev, d) => { if (!ev.active) sim.alphaTarget(0); }));
+
+  node.append("circle")
+    .attr("r", radiusOf)
+    .attr("fill", d => rideIds.has(d.id) && beadState(d) === "absent" ? "none" : colorOf(d))
+    .attr("fill-opacity", d => !rideIds.has(d.id) ? .22
+      : beadState(d) === "active" ? .92 : beadState(d) === "pending" ? .55 : .14)
+    .attr("stroke", colorOf).attr("stroke-width", d => rideIds.has(d.id) ? 1.6 : 1.8)
+    .attr("stroke-dasharray", d => rideIds.has(d.id) && beadState(d) === "absent" ? "2,3" : null)
+    .attr("stroke-opacity", d => rideIds.has(d.id) && beadState(d) === "absent" ? .55 : 1);
+
+  // the bead carries the person: initials now, a photo when one exists
+  const beads = node.filter(d => rideIds.has(d.id));
+  beads.append("circle").attr("r", d => radiusOf(d) + 5)
+    .attr("fill", "transparent").attr("pointer-events", "all");
+  beads.each(function (d) {
+    const el = d3.select(this), st = beadState(d), who = holderOf.get(d.id);
+    if (st === "active" || st === "pending") {
+      el.append("text").attr("class", "bead-face").attr("text-anchor", "middle")
+        .attr("dy", 4).attr("fill", st === "active" ? "#0a0f1a" : "#e8edf5")
+        .text(initials(who && (who.fullName || who.name)));
+      if (st === "pending") {                      // held, but governance has no record
+        el.append("circle").attr("cx", 10).attr("cy", -10).attr("r", 6)
+          .attr("fill", "#0a0f1a").attr("stroke", "#f5a623").attr("stroke-width", 1.2);
+        el.append("text").attr("class", "bead-badge").attr("text-anchor", "middle")
+          .attr("x", 10).attr("y", -7).text("?");
+      }
+    } else {
+      el.append("text").attr("class", "bead-face")
+        .attr("text-anchor", "middle").attr("dy", 4.5)
+        .attr("fill", colorOf(d)).attr("fill-opacity", st === "absent" ? .75 : 1)
+        .style("font-size", "13px").text("?");
+    }
+  });
+
+  if (badgeKey !== "__none"){
+    // the "attribute, not an edge" treatment: belonging drawn on the node, never as spokes
+    node.filter(d => d[badgeKey]).append("circle")
+      .attr("r", d => radiusOf(d) + 6)
+      .attr("fill", "none").attr("stroke", "#e8edf5")
+      .attr("stroke-opacity", .35).attr("stroke-dasharray", "2,4");
+  }
+  if (document.getElementById("showLabels").checked){
+    node.append("text").attr("class", "nlabel").attr("text-anchor", "middle")
+      .attr("dy", d => -radiusOf(d) - 7)
+      .text(d => rideIds.has(d.id) ? "" : d.name);
+    node.append("text").attr("class", "nsub").attr("text-anchor", "middle")
+      .attr("dy", d => radiusOf(d) + 13).style("display", d => rideIds.has(d.id) ? "none" : null)
+      .text(d => d.deg ? d.deg + (d.deg === 1 ? " link" : " links") : "");
+  }
+
+  // Spread with the canvas. Without this a graph tuned for the docked view stays in a
+  // small clump when you go fullscreen, which is the opposite of the point.
+  const k = Math.max(.8, Math.min(2.2, Math.sqrt((W * H) / 600000)));
+  svg.on("click", closeDetail);
+  lastSel = { node, link };
+  applyFocus();
+  applySearch();
+
+  const simNodes = nodes.filter(n => !rideIds.has(n.id));
+  const simLinks = links.filter(l => !rideIds.has(l.source.id) && !rideIds.has(l.target.id));
+  chans.forEach(c => { c.role.x = c.role.x || 0; c.role.y = c.role.y || 0; });
+
+  sim = d3.forceSimulation(simNodes)
+    .force("link", d3.forceLink(simLinks).id(d => d.id).distance(150 * k).strength(.55))
+    .force("charge", d3.forceManyBody().strength(-620 * k).distanceMax(560 * k))
+    .force("center", d3.forceCenter(W / 2, H / 2))
+    .force("collide", d3.forceCollide().radius(d => radiusOf(d) + 26 * k))
+    .on("tick", () => {
+      chans.forEach((c, i) => {
+        // bow successive arcs between the same pair apart, so a Lead and a Rep
+        // read as two sides of one channel rather than one line drawn twice
+        // canonical direction: always parent -> child, whichever way the arc is drawn
+        const mx = (c.parent.x + c.child.x) / 2, my = (c.parent.y + c.child.y) / 2;
+        const dx = c.child.x - c.parent.x, dy = c.child.y - c.parent.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const side = c.spec.direction === "down" ? 1 : -1;
+        const bow = side * Math.min(95, Math.max(52, len * .34));
+        c._cx = mx + (-dy / len) * bow;
+        c._cy = my + (dx / len) * bow;
+        // The role IS the link, so it rides its own curve. Position only — this
+        // node is not in the simulation, so nothing here fights the forces.
+        c.role.x = mx + (-dy / len) * bow * 0.62;
+        c.role.y = my + (dx / len) * bow * 0.62;
+      });
+      arc.attr("d", d => {
+        const a = d.spec.direction === "down" ? d.parent : d.child;
+        const b = d.spec.direction === "down" ? d.child : d.parent;
+        return `M${a.x},${a.y} Q${d._cx},${d._cy} ${b.x},${b.y}`;
+      });
+      link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+      hit .attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+      node.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+    });
+  if (keepPositions) sim.alpha(.25);
+
+  pruneDeadControls(proj);
+
+  const top = nodes.slice().sort((a, b) => b.deg - a.deg)[0];
+  document.getElementById("stats").innerHTML = [
+    ["rows in file",      data.edges.length],
+    ["drawn as edges",    links.length],
+    ["absorbed as attrs", proj.absorbed.length],
+    ["nodes",             nodes.length],
+    ["with no edge",      proj.isolated],
+    ["most connected",    top && top.deg ? top.name + " (" + top.deg + ")" : "-"]
+  ].concat((proj.channels || []).length ? [
+    ["channels drawn",    proj.channels.length],
+    ["broken channels",   proj.channels.filter(c => c.vacant).length]
+  ] : []).concat([]
+  ).map(r => '<div class="stat"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>').join("");
+}
+
+/* A control that cannot change anything is worse than none: it invites a click
+   and teaches that the app is broken. Beads are locked to their arc's colour on
+   purpose — a bead reads as part of the channel it rides — so they can never
+   answer to "colour by", and on a channel-focused view only the circles are left
+   to colour. Hide an option unless it would actually produce more than one. */
+function pruneDeadControls(proj){
+  const beadIds = new Set((proj.channels || []).map(c => c.role.id));
+  const shown = proj.nodes.filter(n => !beadIds.has(n.id));
+  const varies = (key) =>
+    new Set(shown.map(n => key === "__type" ? n.nodeType : n[key]).filter(Boolean)).size > 1;
+
+  const show = (sel, keep, fallback) => {
+    const cur = sel.value;
+    Array.from(sel.options).forEach(o => {
+      const live = keep(o.value);
+      o.hidden = !live; o.disabled = !live;
+    });
+    const live = Array.from(sel.options).filter(o => !o.hidden);
+    if (!live.some(o => o.value === cur)) sel.value = (live[0] || {}).value || fallback;
+    const dead = live.length < 2;
+    sel.style.display = dead ? "none" : "";
+    const label = sel.previousElementSibling;          // the <h2> above it
+    if (label && label.tagName === "H2") label.style.display = dead ? "none" : "";
+    return !dead;
+  };
+
+  show(document.getElementById("colorBy"), v => varies(v), "__type");
+  show(document.getElementById("badgeBy"), v => v === "__none" || varies(v), "__none");
+}
+
+/* ------------------------------------------------------------------- panel */
+function buildPanel(){
+  const edgePreds = schema.predicates.filter(p => p.kind === "edge");
+  const attrPreds = schema.predicates.length - edgePreds.length;
+
+  document.getElementById("predToggles").innerHTML = schema.predicates.map(p => {
+    if (p.kind !== "edge") return '<label class="toggle" style="opacity:.5;cursor:default">' +
+      '<input type="checkbox" disabled>' +
+      '<span class="swatch" style="border-top-color:#3a4a6c;border-top-style:dotted"></span>' +
+      p.label + '<span class="kindtag">attribute</span></label>';
+    return '<label class="toggle"><input type="checkbox" data-pred="' + p.id + '" ' +
+      (visible[p.id] ? "checked" : "") + '>' +
+      '<span class="swatch" style="border-top-color:' + p.style.color +
+      ';border-top-style:' + (p.style.dash ? "dashed" : "solid") + '"></span>' + p.label +
+      (p.deprecated ? '<span class="kindtag" style="color:#f5a623;border-color:#f5a623">legacy</span>' : "") +
+      '</label>';
+  }).join("");
+  document.querySelectorAll("[data-pred]").forEach(cb => cb.onchange = () => {
+    visible[cb.dataset.pred] = cb.checked; render(true);
+  });
+
+  const chanLeg = (schema.channels || []).flatMap(ch => (ch.arcs || []).map(a =>
+    '<div class="toggle" style="cursor:default">' +
+    '<span class="swatch" style="border-top-color:' + a.style.color +
+    ';border-top-style:' + (a.style.dash ? "dashed" : "solid") + '"></span>' +
+    a.label.split(" &mdash; ")[0].split(" — ")[0] +
+    '<span class="kindtag">' + (a.direction === "down" ? "downward" : "upward") + "</span></div>"))
+    .concat((schema.beads ? Object.entries(schema.beads.states || {}) : []).map(([k, v]) => {
+      const dot = k === "active"  ? '<span class="dot" style="background:#8899bb">' + "</span>"
+                : k === "pending" ? '<span class="dot" style="background:#8899bb;opacity:.55;box-shadow:0 0 0 2px var(--warn)"></span>'
+                : k === "vacant"  ? '<span class="dot" style="background:none;border:1px solid #8899bb"></span>'
+                : '<span class="dot" style="background:none;border:1px dashed #8899bb;opacity:.6"></span>';
+      const nm = k === "active" ? "initials &mdash; ratified" : k === "pending" ? "initials + ? &mdash; unratified"
+               : k === "vacant" ? "? &mdash; seat empty" : "ghost &mdash; no record";
+      return '<div class="toggle" style="cursor:default" title="' + v.label + '">' + dot + nm + "</div>";
+    }));
+  if (chanLeg.length)
+    document.getElementById("predToggles").innerHTML +=
+      '<h2 style="margin-top:1rem">Channel</h2>' + chanLeg.join("");
+
+  document.getElementById("typeKey").innerHTML = schema.nodeTypes.map(t =>
+    '<div class="toggle" style="cursor:default"><span class="dot" style="background:' + t.color + '"></span>' +
+    t.label + "</div>").join("");
+
+  const colorSel = document.getElementById("colorBy");
+  colorSel.innerHTML = '<option value="__type">node type</option>' + schema.attributes
+    .filter(a => a.render === "color").map(a => '<option value="' + a.key + '">' + a.label + "</option>").join("");
+  const badgeSel = document.getElementById("badgeBy");
+  badgeSel.innerHTML = '<option value="__none">nothing</option>' + schema.attributes
+    .filter(a => a.render === "badge").map(a => '<option value="' + a.key + '">' + a.label + "</option>").join("");
+  const preferBadge = schema.attributes.filter(a => a.render === "badge")[0];
+  if (preferBadge) badgeSel.value = preferBadge.key;
+  colorSel.onchange = badgeSel.onchange = () => render(true);
+  document.getElementById("showLabels").onchange = () => render(true);
+  document.getElementById("showMutual").onchange = () => render(true);
+
+  const gv = schema.governs;
+  document.getElementById("banner").innerHTML =
+    "<b>" + schema.label + "</b> &mdash; " + schema.note + " " +
+    (gv ? '<a href="' + gv.url + '" target="_blank" rel="noopener">' + gv.label + " &rarr;</a>" : "") +
+    " &nbsp;&middot;&nbsp; " + edgePreds.length + " predicate" + (edgePreds.length === 1 ? "" : "s") +
+    " may be drawn; " + attrPreds + " declared attribute" + (attrPreds === 1 ? "" : "s") + ".";
+}
+
+/* ------------------------------------------------------------------ editor */
+function esc(v){ return String(v == null ? "" : v).replace(/"/g, "&quot;"); }
+
+function cellSelect(row, key, values){
+  const cur = row[key] == null ? "" : row[key];
+  const known = values.some(v => (v.id !== undefined ? v.id : v) === cur);
+  const opts = values.map(v => {
+    const id = v.id !== undefined ? v.id : v, label = v.label !== undefined ? v.label : (v || "-");
+    // a disabled option still displays when it is the selected one: that is how an
+    // absorbed attribute-predicate shows its real value without being newly choosable
+    return '<option value="' + esc(id) + '"' + (id === cur ? " selected" : "") +
+      (v.disabled ? " disabled" : "") + ">" + label + "</option>";
+  }).join("");
+  return '<td class="' + (known ? "" : "bad") + '"><select data-k="' + key + '">' +
+    (known ? "" : '<option value="' + esc(cur) + '" selected>' + cur + " (not in vocabulary)</option>") +
+    opts + "</select></td>";
+}
+function cellList(row, key, values){
+  const id = "dl-" + key;
+  return '<td><input data-k="' + key + '" list="' + id + '" value="' + esc(row[key]) + '">' +
+    '<datalist id="' + id + '">' + values.map(v => '<option value="' + esc(v) + '">').join("") +
+    "</datalist></td>";
+}
+function cellText(row, key){
+  return '<td><input data-k="' + key + '" value="' + esc(row[key]) + '"></td>';
+}
+
+function renderNodesPane(){
+  if (READ_ONLY) return;
+  const attrs = schema.attributes;
+  const head = ["id", "name", "type"].concat(attrs.map(a => a.label));
+  const rows = data.nodes.map((n, i) => {
+    let tds = cellText(n, "id") + cellText(n, "name") + cellSelect(n, "nodeType", schema.nodeTypes);
+    attrs.forEach(a => {
+      if (a.control === "enum") tds += cellSelect(n, a.key, a.values);
+      else if (a.control === "enum-open")
+        tds += cellList(n, a.key, Array.from(new Set(data.nodes.map(x => x[a.key]).filter(Boolean))).sort());
+      else tds += cellText(n, a.key);
+    });
+    return '<tr data-i="' + i + '">' + tds + '<td><button class="rm" title="delete">&times;</button></td></tr>';
+  }).join("");
+  document.getElementById("pNodes").innerHTML =
+    "<table><thead><tr>" + head.map(h => "<th>" + h + "</th>").join("") +
+    "<th></th></tr></thead><tbody>" + rows + "</tbody></table>";
+  wire("pNodes", data.nodes);
+}
+
+function renderEdgesPane(){
+  if (READ_ONLY) return;
+  // Enforcement by construction: only edge-kind predicates are selectable. Attribute-kind
+  // predicates are listed but disabled — an existing row keeps showing what it says, and no
+  // new row can record co-location as a line, because the option cannot be chosen.
+  const preds = schema.predicates.filter(p => p.kind === "edge").map(p => ({ id: p.id, label: p.label }))
+    .concat(schema.predicates.filter(p => p.kind === "attribute")
+      .map(p => ({ id: p.id, label: p.label + "  (attribute — absorbed onto the nodes)", disabled: true })));
+  const ids = data.nodes.map(n => ({ id: n.id, label: n.name + " (" + n.nodeType + ")" }));
+  const rows = data.edges.map((e, i) => {
+    let tds = cellSelect(e, "subject", ids) + cellSelect(e, "predicate", preds) + cellSelect(e, "object", ids);
+    tds += cellText(e, "via");
+    tds += cellSelect(e, "confirmed", [{id:"true",label:"confirmed"},{id:"false",label:"candidate (unverified)"}]);
+    tds += cellSelect(e, "source", [{id:"curated",label:"curated"},
+                                    {id:"self-published",label:"self-published"},
+                                    {id:"notion",label:"notion"}]);
+    tds += cellText(e, "note");
+    return '<tr data-i="' + i + '">' + tds + '<td><button class="rm" title="delete">&times;</button></td></tr>';
+  }).join("");
+  document.getElementById("pEdges").innerHTML =
+    "<table><thead><tr>" + ["subject","predicate","object","via","status","source","note"]
+      .map(h => "<th>" + h + "</th>").join("") + "<th></th></tr></thead><tbody>" + rows + "</tbody></table>";
+  wire("pEdges", data.edges);
+}
+
+function wire(paneId, arr){
+  document.getElementById(paneId).querySelectorAll("tr[data-i]").forEach(tr => {
+    const i = +tr.dataset.i;
+    tr.querySelectorAll("[data-k]").forEach(inp => {
+      inp.onchange = () => { arr[i][inp.dataset.k] = inp.value; touched(); };
+    });
+    tr.querySelector(".rm").onclick = () => { arr.splice(i, 1); touched(); };
+  });
+}
+
+function renderValPane(){
+  if (READ_ONLY) return;
+  issues = validate();
+  const errs = issues.filter(i => i.lvl === "err").length;
+  const badge = document.getElementById("vcount");
+  badge.textContent = errs; badge.className = "badge" + (errs ? "" : " zero");
+  const order = { err: 0, warn: 1, info: 2 };
+  const body = issues.slice().sort((a, b) => order[a.lvl] - order[b.lvl]).map(i =>
+    '<div class="issue ' + (i.lvl === "err" ? "" : i.lvl) + '">' +
+    '<div class="rule">' + i.lvl.toUpperCase() + " &middot; " + i.rule + "</div>" +
+    "<div>" + i.msg + '</div><div class="where">' + i.where + "</div></div>").join("");
+  document.getElementById("pVal").innerHTML = issues.length ? body :
+    '<div class="clean">Every row satisfies <b>' + schema.label + "</b>.</div>";
+}
+
+function touched(){ persist(); renderNodesPane(); renderEdgesPane(); renderValPane(); render(true); }
+
+/* -------------------------------------------------------------------- boot */
+async function useSchema(id){
+  scId = id;
+  schema = await loadSchema(id);
+  visible = {};
+  // `defaultVisible` lets a schema open on the reading it is about; without it,
+  // every edge predicate is on, which is the right default for a general view.
+  const dv = schema.defaultVisible;
+  schema.predicates.forEach(p => {
+    if (p.kind === "edge") visible[p.id] = dv ? dv.includes(p.id) : true;
+  });
+  buildPanel(); renderNodesPane(); renderEdgesPane(); renderValPane(); render(false);
+}
+async function useDataset(id, forceSeed){
+  dsId = id;
+  data = await loadDataset(id, forceSeed);
+  const sel = document.getElementById("sc");
+  sel.innerHTML = "";
+  const list = await Promise.all(DATASET_DEFS[id].schemas.map(loadSchema));
+  list.forEach(s => sel.add(new Option(s.label, s.id)));
+  await useSchema(DATASET_DEFS[id].schemas[0]);
+}
+
+// A deployment declares its own mode and (later) its own datasets. Absent a
+// manifest the app is a workbench, which is the right default for a clone.
+async function loadManifest(){
+  try {
+    const r = await fetch("manifest.json", { cache: "no-store" });
+    if (r.ok) return await r.json();
+  } catch (e) {}
+  return {};
+}
+
+function applyMode(){
+  document.body.classList.toggle("read-only", READ_ONLY);
+  if (!READ_ONLY) return;
+  // remove, don't hide: a control that is not in the DOM cannot be reached
+  ["reseed", "expN", "expE", "addNode", "addEdge"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.remove();
+  });
+  const drawer = document.getElementById("drawer"); if (drawer) drawer.remove();
+  const sc = document.getElementById("shortcutList");
+  if (sc) sc.innerHTML =
+    '<b style="color:var(--muted)">m</b> map only &middot; ' +
+    '<b style="color:var(--muted)">c</b> controls<br>' +
+    '<b style="color:var(--muted)">f</b> fullscreen &middot; ' +
+    '<b style="color:var(--muted)">esc</b> bring it all back<br>' +
+    '<b style="color:var(--muted)">g</b> field guide<br>' +
+    'hover to glance, <b style="color:var(--muted)">click</b> for the full record';
+  const split = document.getElementById("split"); if (split) split.remove();
+}
+
+let searchTerm = "";
+function applySearch(){
+  if (!lastSel.node) return;
+  const q = searchTerm.trim().toLowerCase();
+  lastSel.node.classed("searchdim", d => {
+    if (!q) return false;
+    const hay = [d.name, d.fullName, d.roleType, d.purpose].filter(Boolean).join(" ").toLowerCase();
+    return !hay.includes(q);
+  });
+  lastSel.link.classed("searchdim", l => !!q);
+}
+document.getElementById("q").addEventListener("input", e => {
+  searchTerm = e.target.value; applySearch();
+});
+
+// Deployment chrome: a banner, a badge and links, declared by the manifest so
+// the renderer carries no organisation's words.
+function applyDeploymentChrome(manifest){
+  const b = document.getElementById("deployBanner");
+  if (manifest.banner) {
+    b.innerHTML = manifest.banner +
+      (manifest.links || []).map(l => ' <a href="' + l.url + '" target="_blank" rel="noopener">' +
+        l.label + " &rarr;</a>").join("");
+    b.style.display = "";
+  }
+  const badge = document.getElementById("deployBadge");
+  if (manifest.badge) { badge.textContent = manifest.badge; badge.style.display = ""; }
+  const g = document.getElementById("guide");
+  if (manifest.guideUrl) g.href = manifest.guideUrl;
+  else if (manifest.guideUrl === null || manifest.hideGuide) g.remove();
+  if (manifest.title) {
+    document.querySelector("header h1").textContent = manifest.title;
+    document.title = manifest.title;
+  }
+}
+
+document.getElementById("ds").onchange = e => useDataset(e.target.value);
+document.getElementById("sc").onchange = e => useSchema(e.target.value);
+document.getElementById("relayout").onclick = () => render(false);
+document.getElementById("reseed").onclick = () => {
+  if (confirm("Discard local edits and reload " + dsId + " from data/" + dsId + "/*.csv?"))
+    useDataset(dsId, true);
+};
+document.getElementById("expN").onclick = () => download(dsId + "-nodes.csv", toCSV(colsFor("nodes"), data.nodes));
+document.getElementById("expE").onclick = () => download(dsId + "-edges.csv", toCSV(colsFor("edges"), data.edges));
+document.getElementById("addNode").onclick = () => {
+  data.nodes.push({ id: "new-" + (data.nodes.length + 1), name: "New node",
+                    nodeType: schema.nodeTypes[0].id });
+  document.querySelector('[data-pane="pNodes"]').click(); touched();
+};
+document.getElementById("addEdge").onclick = () => {
+  const p = schema.predicates.filter(x => x.kind === "edge")[0];
+  data.edges.push({ subject: data.nodes[0] ? data.nodes[0].id : "", predicate: p ? p.id : "",
+                    object: data.nodes[1] ? data.nodes[1].id : "", confirmed: "true",
+                    source: "curated", note: "" });
+  document.querySelector('[data-pane="pEdges"]').click(); touched();
+};
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  if (READ_ONLY) return;
+  // clicking a tab while the panels are hidden brings them back to that tab
+  if (document.body.classList.contains("panels-off")) setPanels(true);
+  document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === t));
+  document.querySelectorAll(".pane").forEach(p => p.classList.toggle("on", p.id === t.dataset.pane));
+});
+
+/* ------------------------------------------------------------- map framing */
+/* Resizing must not re-run the layout — that would scatter a graph you were
+   reading. Move the centring force instead and let it settle. */
+let lastArea = 0;
+function recentre(){
+  if (!sim) return;
+  const el = document.getElementById("svg");
+  const w = el.clientWidth, h = el.clientHeight;
+  if (!w || !h) return;
+  const area = w * h;
+  // a nudge keeps the graph you were reading; a big change (going map-only or
+  // fullscreen) has earned a fresh layout that actually uses the canvas
+  if (lastArea && (area > lastArea * 1.35 || area < lastArea / 1.35)){
+    lastArea = area; render(false); return;
+  }
+  lastArea = area;
+  sim.force("center", d3.forceCenter(w / 2, h / 2));
+  sim.alpha(.18).restart();
+}
+let rzT = null;
+const recentreSoon = () => { clearTimeout(rzT); rzT = setTimeout(recentre, 110); };
+window.addEventListener("resize", recentreSoon);
+new ResizeObserver(recentreSoon).observe(document.getElementById("graphwrap"));
+
+const VIEW = "orgmap-lab:view";
+const viewState = { panels: true, controls: true, drawerH: null };
+function loadViewState(){
+  if (READ_ONLY) return;                       // a published map remembers nothing
+  try { Object.assign(viewState, JSON.parse(localStorage.getItem(VIEW) || "{}")); } catch (e) {}
+}
+const saveView = () => {
+  if (READ_ONLY) return;
+  localStorage.setItem(VIEW, JSON.stringify(viewState));
+};
+
+function setPanels(on){
+  viewState.panels = on; saveView();
+  document.body.classList.toggle("panels-off", !on);
+  document.getElementById("tglPanels").textContent = on ? "Hide panels" : "Show panels";
+}
+function setControls(on){
+  viewState.controls = on; saveView();
+  document.body.classList.toggle("controls-off", !on);
+  document.getElementById("tglControls").textContent = on ? "Hide controls" : "Show controls";
+}
+document.getElementById("tglPanels").onclick   = () => setPanels(!viewState.panels);
+document.getElementById("tglControls").onclick = () => setControls(!viewState.controls);
+
+const fsBtn = document.getElementById("fs");
+fsBtn.onclick = () => document.fullscreenElement
+  ? document.exitFullscreen()
+  : document.documentElement.requestFullscreen();
+document.addEventListener("fullscreenchange", () => {
+  fsBtn.textContent = document.fullscreenElement ? "Exit fullscreen" : "Fullscreen";
+  recentreSoon();
+});
+
+// drag the divider; the graph keeps its positions throughout
+(function(){
+  const split = document.getElementById("split"), drawer = document.getElementById("drawer");
+  if (viewState.drawerH) drawer.style.height = viewState.drawerH + "px";
+  let dragging = false;
+  split.addEventListener("mousedown", e => {
+    dragging = true; split.classList.add("dragging");
+    document.body.style.userSelect = "none"; e.preventDefault();
+  });
+  window.addEventListener("mousemove", e => {
+    if (!dragging) return;
+    const top = document.querySelector("main").getBoundingClientRect().top;
+    const h = Math.min(Math.max(window.innerHeight - e.clientY, 34), window.innerHeight - top - 120);
+    drawer.style.height = h + "px";
+  });
+  window.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false; split.classList.remove("dragging");
+    document.body.style.userSelect = "";
+    viewState.drawerH = drawer.getBoundingClientRect().height; saveView();
+  });
+})();
+
+document.addEventListener("keydown", e => {
+  const t = e.target.tagName;
+  if (t === "INPUT" || t === "SELECT" || t === "TEXTAREA" || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === "p") setPanels(!viewState.panels);
+  else if (e.key === "c") setControls(!viewState.controls);
+  else if (e.key === "f") fsBtn.click();
+  else if (e.key === "m"){ setPanels(false); setControls(false); }   // map, nothing else
+  else if (e.key === "g") document.getElementById("guide").click();
+  else if (e.key === "Escape" && !document.fullscreenElement){
+    if (selected) closeDetail(); else { setPanels(true); setControls(true); }
+  }
+});
+
+
+(async () => {
+  const manifest = await loadManifest();
+  READ_ONLY = modeParam ? modeParam === "view" : manifest.mode === "view";
+  applyMode();
+  applyDeploymentChrome(manifest);
+  loadViewState();
+  setPanels(viewState.panels); setControls(viewState.controls);
+
+  const sel = document.getElementById("ds");
+  const sets = manifest.datasets || DATASETS;
+  DATASET_DEFS = sets;
+  Object.keys(sets).forEach(k => sel.add(new Option(sets[k].label, k)));
+  if (Object.keys(sets).length < 2) sel.parentElement.style.display = "none";
+  await useDataset(manifest.defaultDataset || Object.keys(sets)[0]);
+})();
+</script>
 </body>
 </html>

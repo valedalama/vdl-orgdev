@@ -1,0 +1,225 @@
+{
+  "id": "vdl-doublelink",
+  "dataset": "vdl",
+  "label": "VdL — double link (solidarity / subsidiarity)",
+  "note": "The same shipped data, read one level up. A Circle Lead and a Circle Rep are not two roles that happen to sit beside a circle: together they are the two-way channel joining that circle to the one above it. Appointed downward, elected upward. Where one half is vacant the channel is drawn broken, because a circle with no Rep has no way to speak upward.",
+  "governs": {
+    "label": "Product Vision — solidarity and subsidiarity via double-linking",
+    "url": "https://github.com/valedalama/vdl-orgdev"
+  },
+  "nodeTypes": [
+    {
+      "id": "circle",
+      "label": "Circle  (org:OrganizationalUnit)",
+      "color": "#6366f1",
+      "r": 26
+    },
+    {
+      "id": "role",
+      "label": "Role  (org:Post)",
+      "color": "#f5a623",
+      "r": 18
+    },
+    {
+      "id": "person",
+      "label": "Person  (foaf:Agent)",
+      "color": "#2dd4bf",
+      "r": 15
+    }
+  ],
+  "attributes": [
+    {
+      "key": "roleType",
+      "label": "Role type",
+      "control": "enum",
+      "values": [
+        "",
+        "Defined Role",
+        "Secretary",
+        "Facilitator",
+        "Circle Rep",
+        "Circle Lead"
+      ],
+      "render": "badge",
+      "rationale": "Notion's Role Type select already carries exactly these values — the typing work is done."
+    },
+    {
+      "key": "status",
+      "label": "Status",
+      "control": "enum-open",
+      "render": "color"
+    },
+    {
+      "key": "purpose",
+      "label": "Purpose",
+      "control": "text"
+    }
+  ],
+  "predicates": [
+    {
+      "id": "subcircle",
+      "label": "Sub-circle of  (org:subOrganizationOf)",
+      "kind": "edge",
+      "subjectTypes": [
+        "circle"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#6366f1",
+        "width": 2.2,
+        "dash": null
+      }
+    },
+    {
+      "id": "holds",
+      "label": "Role in its circle  (org:postIn)",
+      "kind": "edge",
+      "subjectTypes": [
+        "role"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#f5a623",
+        "width": 2.2,
+        "dash": null
+      }
+    },
+    {
+      "id": "energizes",
+      "label": "Fills the role  (org:holds)",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "role"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#2dd4bf",
+        "width": 1.8,
+        "dash": null
+      }
+    },
+    {
+      "id": "leads",
+      "label": "Leads  (collapsed)",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "deprecated": {
+        "message": "Collapsed edge. Should be person -> role(Circle Lead) -> circle; as drawn, a vacant Circle Lead is invisible.",
+        "issue": "valedalama/vdl-orgdev#2"
+      },
+      "style": {
+        "color": "#e4585f",
+        "width": 1.6,
+        "dash": "3,3"
+      }
+    },
+    {
+      "id": "represents",
+      "label": "Represents  (collapsed)",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "deprecated": {
+        "message": "Collapsed edge. Should be person -> role(Circle Rep) -> circle; as drawn, a vacant Circle Rep is invisible.",
+        "issue": "valedalama/vdl-orgdev#2"
+      },
+      "style": {
+        "color": "#e4585f",
+        "width": 1.6,
+        "dash": "3,3"
+      }
+    },
+    {
+      "id": "member",
+      "label": "Member, no role recorded",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "deprecated": {
+        "message": "The circle's member list claims this person, but no role in that circle does. Two records disagreeing, not extra information.",
+        "issue": "record reconciliation"
+      },
+      "style": {
+        "color": "#64748b",
+        "width": 1.5,
+        "dash": "2,4"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "id": "double-link",
+      "label": "Double link",
+      "roleToCircle": "holds",
+      "childToParent": "subcircle",
+      "arcs": [
+        {
+          "roleType": "Circle Lead",
+          "direction": "down",
+          "label": "Solidarity — appointed; carries the super-circle's purpose down",
+          "style": {
+            "color": "#8b5cf6",
+            "width": 2.8,
+            "dash": null
+          }
+        },
+        {
+          "roleType": "Circle Rep",
+          "direction": "up",
+          "label": "Subsidiarity — elected; carries tensions, needs and learning up",
+          "style": {
+            "color": "#2dd4bf",
+            "width": 2.8,
+            "dash": "7,4"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultVisible": [
+    "subcircle"
+  ],
+  "focusChannel": true,
+  "beads": {
+    "ratifiedField": "ratifiedOn",
+    "states": {
+      "active": {
+        "label": "Ratified — governance has confirmed the holder"
+      },
+      "pending": {
+        "label": "Held, but no ratification on record"
+      },
+      "vacant": {
+        "label": "The seat exists and nobody is in it"
+      },
+      "absent": {
+        "label": "No such role record — the seat was never created"
+      }
+    }
+  }
+}

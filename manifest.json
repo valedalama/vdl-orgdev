@@ -1,0 +1,28 @@
+{
+  "_comment": "Deployment manifest for the Vale da Lama governance map. mode=view: this is the published map, not the workbench.",
+  "title": "Quinta Vale da Lama",
+  "mode": "view",
+  "badge": "From Notion — generated",
+  "banner": "<b>Provisional.</b> This map is generated live from Notion and shows the structure as currently recorded. The Governance Handbook describes four Circles — Anchor, Operations, Casa, Regenerative Farm — and this view does not yet match it. Reconciling the two is on the agenda for the first Governance Meeting. Until then the Handbook is what holds.",
+  "links": [
+    {
+      "label": "Read the Handbook",
+      "url": "https://github.com/valedalama/vdl-orgdev/tree/main/handbook/pt"
+    }
+  ],
+  "hideGuide": true,
+  "defaultDataset": "vdl",
+  "datasets": {
+    "vdl": {
+      "label": "Vale da Lama",
+      "schemas": [
+        "vdl-target",
+        "vdl-doublelink"
+      ],
+      "source": {
+        "format": "graph",
+        "path": "graph.json"
+      }
+    }
+  }
+}
