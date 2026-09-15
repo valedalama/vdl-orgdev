@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+# Refuse to push a commit that changes what a reader sees, unless the commit
+# message names an issue.
+#
+# This is the backstop for the turf split in CLAUDE.md. It is a speed bump, not
+# a permission system — it cannot tell whether anyone read the issue, and does
+# not try. All it enforces is that the announcement EXISTS, because the thing
+# that failed on 2026-09-13 was not judgement, it was that a manifest edit never
+# got named as work at all.
+#
+#   Install:   git config core.hooksPath .githooks
+#   Override:  git push --no-verify        (legitimate; mean it)
+#
+# Guarded paths are the reader-visible surface, at any depth, so the same hook
+# works in the lab (index.html at the root) and in a deployment that carries the
+# map under docs/orgmap/.
+#
+# GENERATED files are deliberately NOT guarded. Regenerating graph.json or
+# orgmap.json and pushing it is routine and carries no design decision; making
+# that require an issue would teach everyone to reach for --no-verify, which is
+# the one outcome that would destroy this hook's usefulness.
+
+zero='0000000000000000000000000000000000000000'
+fail=0
+
+# Reader-visible. A change here alters what a visitor gets.
+guarded='(^|/)index\.html$|(^|/)manifest\.json$|(^|/)schemas/|(^|/)vendor/d3\.min\.js$|(^|/)data/.*\.(csv|json)$'
+
+# Machine-generated: excluded from the guard above.
+generated='(^|/)graph\.json$|(^|/)data/orgmap\.json$'
+
+# An issue reference: "#12", "Refs #12", or a full issues URL.
+issue_ref='#[0-9]+|/issues/[0-9]+'
+
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+    # Branch deletion: nothing to inspect.
+    [ "$local_sha" = "$zero" ] && continue
+
+    if [ "$remote_sha" = "$zero" ]; then
+        # New branch: everything not already on some remote.
+        range=$(git rev-list "$local_sha" --not --remotes)
+    else
+        range=$(git rev-list "$remote_sha..$local_sha")
+    fi
+
+    for sha in $range; do
+        # Merge commits carry no authored change of their own.
+        [ "$(git rev-list --parents -n1 "$sha" | wc -w)" -gt 2 ] && continue
+
+        files=$(git diff-tree --no-commit-id --name-only -r "$sha" \
+                | grep -Ev "$generated" \
+                | grep -E "$guarded")
+        [ -z "$files" ] && continue
+
+        if ! git log -1 --format='%B' "$sha" | grep -Eq "$issue_ref"; then
+            if [ "$fail" -eq 0 ]; then
+                echo
+                echo "  Push refused: reader-visible changes with no issue named."
+                echo
+            fi
+            fail=1
+            echo "  $(git log -1 --format='%h  %s' "$sha")"
+            echo "$files" | sed 's/^/        /'
+            echo
+        fi
+    done
+done
+
+if [ "$fail" -ne 0 ]; then
+    cat <<'MSG'
+  These commits change what a visitor sees, so per CLAUDE.md they need an
+  issue that exists before the change and a reference to it in the message.
+
+  Add a line like "Refs #12" to each commit listed above:
+      git commit --amend                 # if it is the newest commit
+      git rebase -i <commit>~1           # if it is further back
+
+  If you meant to push without one, say so explicitly:
+      git push --no-verify
+
+MSG
+    exit 1
+fi
+
+exit 0
