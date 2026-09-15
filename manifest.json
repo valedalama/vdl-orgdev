@@ -15,8 +15,8 @@
     "vdl": {
       "label": "Vale da Lama",
       "schemas": [
-        "vdl-target",
-        "vdl-doublelink"
+        "vdl-doublelink",
+        "vdl-target"
       ],
       "source": {
         "format": "graph",
