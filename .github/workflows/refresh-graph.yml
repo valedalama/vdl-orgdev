@@ -8,7 +8,8 @@ name: Refresh graph.json
 on:
   schedule:
     - cron: "17 5 * * *"      # daily, 05:17 UTC — off the hour to dodge peak
-  workflow_dispatch:           # "Run workflow" after a Governance Meeting
+    - cron: "47 * * * *"      # hourly, ONLY through 2026-11-26 — see the gate step
+  workflow_dispatch:           # "Run workflow" after a Governance Meeting, or `orgmap-refresh`
 
 concurrency:
   group: refresh-graph
@@ -21,18 +22,40 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
+      # Hourly runs exist for the run-up to the all-staff session of
+      # 24–26 Nov 2026, when Notion is being corrected in bursts. After the
+      # 26th the hourly trigger does nothing and the daily run carries on.
+      # To end it for good, delete the "47 * * * *" line above.
+      - name: Gate — hourly runs end after 2026-11-26
+        id: gate
+        run: |
+          if [ "${{ github.event.schedule }}" = "47 * * * *" ] && [ "$(date -u +%F)" \> "2026-11-26" ]; then
+            echo "Hourly window closed; the daily run continues."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.skip != 'true'
 
       - uses: actions/setup-node@v4
+        if: steps.gate.outputs.skip != 'true'
         with:
           node-version: "20"
 
       - name: Build graph.json from Notion
+        if: steps.gate.outputs.skip != 'true'
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
         run: node scripts/build-graph.mjs
 
+      - name: Rebuild the per-circle validation sheets
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+        run: node scripts/build-validation-sheets.mjs
+
       - name: Sanity-check the output
+        if: steps.gate.outputs.skip != 'true'
         run: |
           node -e '
             const g = require("./graph.json");
@@ -65,15 +88,22 @@ jobs:
           '
 
       - name: Commit if changed
+        if: steps.gate.outputs.skip != 'true'
         run: |
-          if git diff --quiet -- graph.json; then
+          # Each sheet carries the date it was generated. A change to that line
+          # alone is not a change in the organisation, so drop it rather than
+          # commit 18 files every hour.
+          if git diff --quiet -I '^> .* · [0-9]{4}-[0-9]{2}-[0-9]{2}$' -- docs/generated; then
+            git checkout -- docs/generated
+          fi
+          if git diff --quiet -- graph.json docs/generated; then
             echo "No structural change."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add graph.json
-          git commit -m "chore: refresh graph.json from Notion
+          git add graph.json docs/generated
+          git commit -m "chore: refresh graph.json and validation sheets from Notion
 
           $(node -e 'const m=require("./graph.json").meta;console.log(`${m.circleCount} circles, ${m.personCount} people, ${m.edgeCount} edges`)')"
           git push
