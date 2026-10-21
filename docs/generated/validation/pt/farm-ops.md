@@ -1,7 +1,7 @@
 # Farm Ops — Folha de validação
 
 > NÃO EDITAR À MÃO — este ficheiro é regenerado. Corrija no Notion, não aqui.
-> Gerado automaticamente a partir do Notion · 2026-08-30
+> Gerado automaticamente a partir do Notion · 2026-10-21
 
 **Propósito:** Regenerative Organic Agriculture
 
@@ -15,7 +15,7 @@
 | **Circle Lead** | Ricardo Gomes | Active |
 | **Facilitator** | Luis Silva | Active |
 | **Secretary** | Anna Pelegrim | Active |
-| **Circle Rep** | — em aberto — | Vacant |
+| **Circle Rep** | Hugo Barbosa | Active |
 
 ## Papéis definidos
 
@@ -30,7 +30,6 @@
 - `SilviCulture` — está ligado a mais do que um círculo (HFC: Holistic Farm Care, Farm Ops)
 - `Water Guardian` — papel sem propósito escrito
 - **Henrico Sousa** — energiza um papel deste círculo mas não consta dos membros do círculo (`Water Guardian`)
-- `circleRep: Farm Ops` — papel sem propósito escrito
 - `circleLead: Farm Ops` — papel sem propósito escrito
 
 ## Perguntas para o círculo

@@ -1,7 +1,7 @@
 # B&B Accommodations — Validation sheet
 
 > DO NOT EDIT BY HAND — this file is regenerated. Fix it in Notion, not here.
-> Generated from Notion · 2026-08-30
+> Generated from Notion · 2026-10-21
 
 **Purpose:** To provide welcoming, comfortable, and regenerative accommodation that allows guests to rest, reconnect, and feel at home within the living ecosystem of Vale da Lama.
 

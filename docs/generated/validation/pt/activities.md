@@ -1,7 +1,7 @@
 # Activities — Folha de validação
 
 > NÃO EDITAR À MÃO — este ficheiro é regenerado. Corrija no Notion, não aqui.
-> Gerado automaticamente a partir do Notion · 2026-08-30
+> Gerado automaticamente a partir do Notion · 2026-10-21
 
 **Propósito:** To design and host learning, wellbeing, and creative activities that support connection with self, others, and the land, using Vale da Lama's spaces as living classrooms.
 

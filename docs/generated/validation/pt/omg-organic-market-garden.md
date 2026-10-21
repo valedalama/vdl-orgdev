@@ -1,7 +1,7 @@
 # OMG: Organic Market Garden — Folha de validação
 
 > NÃO EDITAR À MÃO — este ficheiro é regenerado. Corrija no Notion, não aqui.
-> Gerado automaticamente a partir do Notion · 2026-08-30
+> Gerado automaticamente a partir do Notion · 2026-10-21
 
 **Propósito:** Everything you need to be well-nourished
 

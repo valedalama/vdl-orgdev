@@ -1,7 +1,7 @@
 # Groups & Retreats — Validation sheet
 
 > DO NOT EDIT BY HAND — this file is regenerated. Fix it in Notion, not here.
-> Generated from Notion · 2026-08-30
+> Generated from Notion · 2026-10-21
 
 **Purpose:** To host groups and retreats in a coherent, respectful, and regenerative way, offering integrated experiences that align accommodation, food, activities, and land stewardship.
 

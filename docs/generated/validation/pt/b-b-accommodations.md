@@ -1,7 +1,7 @@
 # B&B Accommodations — Folha de validação
 
 > NÃO EDITAR À MÃO — este ficheiro é regenerado. Corrija no Notion, não aqui.
-> Gerado automaticamente a partir do Notion · 2026-08-30
+> Gerado automaticamente a partir do Notion · 2026-10-21
 
 **Propósito:** To provide welcoming, comfortable, and regenerative accommodation that allows guests to rest, reconnect, and feel at home within the living ecosystem of Vale da Lama.
 

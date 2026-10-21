@@ -1,7 +1,7 @@
 # Restaurant — Validation sheet
 
 > DO NOT EDIT BY HAND — this file is regenerated. Fix it in Notion, not here.
-> Generated from Notion · 2026-08-30
+> Generated from Notion · 2026-10-21
 
 **Purpose:** To offer nourishing, seasonal food experiences rooted in the farm's production, embodying the Farm → Fork → Farm cycle, where food supports human health, local economy, and soil regeneration.
 

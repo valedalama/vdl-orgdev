@@ -1,7 +1,7 @@
 # Farm Ops — Validation sheet
 
 > DO NOT EDIT BY HAND — this file is regenerated. Fix it in Notion, not here.
-> Generated from Notion · 2026-08-30
+> Generated from Notion · 2026-10-21
 
 **Purpose:** Regenerative Organic Agriculture
 
@@ -15,7 +15,7 @@
 | **Circle Lead** | Ricardo Gomes | Active |
 | **Facilitator** | Luis Silva | Active |
 | **Secretary** | Anna Pelegrim | Active |
-| **Circle Rep** | — open — | Vacant |
+| **Circle Rep** | Hugo Barbosa | Active |
 
 ## Defined roles
 
@@ -30,7 +30,6 @@
 - `SilviCulture` — is linked to more than one circle (HFC: Holistic Farm Care, Farm Ops)
 - `Water Guardian` — role has no written purpose
 - **Henrico Sousa** — energizes a role in this circle but is not listed among its members (`Water Guardian`)
-- `circleRep: Farm Ops` — role has no written purpose
 - `circleLead: Farm Ops` — role has no written purpose
 
 ## Questions for the circle

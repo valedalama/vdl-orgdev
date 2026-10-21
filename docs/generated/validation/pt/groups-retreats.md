@@ -1,7 +1,7 @@
 # Groups & Retreats — Folha de validação
 
 > NÃO EDITAR À MÃO — este ficheiro é regenerado. Corrija no Notion, não aqui.
-> Gerado automaticamente a partir do Notion · 2026-08-30
+> Gerado automaticamente a partir do Notion · 2026-10-21
 
 **Propósito:** To host groups and retreats in a coherent, respectful, and regenerative way, offering integrated experiences that align accommodation, food, activities, and land stewardship.
 
