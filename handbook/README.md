@@ -7,6 +7,15 @@ the document itself. Everything else is generated from them.
 > held read-only exports. That is now reversed. The reason is in §*Why it was inverted* below; the
 > practical consequence is that **an edit made to a `.pages` file no longer reaches the Handbook.**
 
+## Read it online
+
+- **Português (o texto que vigora):** <https://valedalama.github.io/vdl-orgdev/handbook/pt/>
+- **English (a translation):** <https://valedalama.github.io/vdl-orgdev/handbook/en/>
+
+Each contents page lists the ten documents in order. Every document opens in the browser and can
+be downloaded as Word (`.docx`). These are the links to give people; the map's **Read the Handbook**
+button opens the Portuguese one.
+
 ---
 
 ## What is here
@@ -15,8 +24,14 @@ the document itself. Everything else is generated from them.
 |---|---|
 | `pt/*.md` | The **definitive** Portuguese Handbook. This is the source. |
 | `en/*.md` | The English Handbook — a translation of the Portuguese, human-accepted, not machine-refreshed |
+| `pt/index.md`, `en/index.md` | **Generated.** The contents pages above, built from the documents' own titles by `scripts/build-handbook-index.mjs`. Not Handbook documents. Do not edit |
 | `pt/*.docx`, `en/*.docx` | **Generated.** Produced by `scripts/md2docx.py`. Do not edit |
 | `en/00_*.md` | Working notes about the translation, not Handbook documents |
+
+**The contents pages look after themselves.** When a document is added, removed or retitled, the
+*Handbook contents pages* workflow rebuilds both pages and commits them within a minute or two of the
+push. Nobody runs anything. To add a document, name it `NN_Title.md` and put its title on the line
+after the banner, as the existing ten do.
 
 **The Portuguese wins.** Where the two language sets disagree, the Portuguese is the governance
 document and the English is a translation of it.
