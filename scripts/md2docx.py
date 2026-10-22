@@ -179,8 +179,13 @@ def main(argv):
         for a in argv[1:]:
             paths.extend(Path(p) for p in glob.glob(a))
 
-    # README.md and the translation working notes are not Handbook documents.
-    paths = [p for p in paths if p.name != "README.md" and not p.name.startswith("00_")]
+    # README.md, the generated contents pages and the translation working notes
+    # are not Handbook documents. index.md is itself generated — from the other
+    # documents' titles — so converting it would produce an index.docx that no
+    # contents page links to and that scripts/handbook-roundtrip.sh would then
+    # compare against a file nobody authored.
+    skip = {"README.md", "index.md"}
+    paths = [p for p in paths if p.name not in skip and not p.name.startswith("00_")]
 
     if not paths:
         print("nothing to convert", file=sys.stderr)

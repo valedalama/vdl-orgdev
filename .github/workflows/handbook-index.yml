@@ -1,0 +1,69 @@
+name: Handbook contents pages
+
+# Regenerates handbook/pt/index.md and handbook/en/index.md from the Handbook
+# documents and commits them if they changed.
+#
+# WHY THIS COMMITS RATHER THAN CHECKS. The obvious shape for a generated file
+# that is committed to the repo is a check: regenerate, diff, fail if stale.
+# That would be the wrong instrument here. The people who edit the Handbook work
+# in the GitHub web editor and do not run node — so a failing check would put a
+# red ✗ on their commit that the person who caused it has no way to clear. The
+# job of these pages is to follow the documents without anyone being asked to
+# remember them, so the workflow does the regenerating itself.
+#
+# scripts/build-handbook-index.mjs --check still exists, for reading the diff
+# locally before you commit. It is just not what runs here.
+#
+# No loop: a push made with the default GITHUB_TOKEN does not trigger workflows,
+# so the commit below cannot re-enter this workflow. The two index pages are
+# excluded from paths as well, and a re-run would in any case find them current
+# and commit nothing — three independent reasons, because a self-committing
+# workflow is exactly the place to not rely on one.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'handbook/pt/*.md'
+      - 'handbook/en/*.md'
+      - '!handbook/pt/index.md'
+      - '!handbook/en/index.md'
+      - 'scripts/build-handbook-index.mjs'
+      - '.github/workflows/handbook-index.yml'
+  workflow_dispatch:           # "Run workflow", after a rename done outside these paths
+
+concurrency:
+  group: handbook-index
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Regenerate the contents pages
+        run: node scripts/build-handbook-index.mjs
+
+      - name: Commit if changed
+        run: |
+          # The generator writes no date into either page, so a diff here means
+          # a document was added, removed, or retitled — never just elapsed time.
+          if git diff --quiet -- handbook/pt/index.md handbook/en/index.md; then
+            echo "Contents pages already match the documents."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add handbook/pt/index.md handbook/en/index.md
+          git commit -m "chore: regenerate the Handbook contents pages
+
+          $(git diff --cached --name-only | sed 's/^/  /')"
+          git push
