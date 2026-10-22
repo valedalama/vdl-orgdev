@@ -41,6 +41,13 @@ count_in() {  # dir, term  -> matching lines
 PT_HITS="$(count_in "$PT_DIR" "$PT_TERM")"
 EN_HITS="$(count_in "$EN_DIR" "$EN_TERM")"
 
+# index.md in both sets is the generated contents page. Its lines are document
+# titles copied out of the documents, so a hit there is an echo of a heading
+# already counted below it — and a term that appears ONLY in a title would be
+# reported as present in both sets on the strength of two generated files.
+PT_HITS="$(printf '%s\n' "$PT_HITS" | grep -v '/index\.md:' || true)"
+EN_HITS="$(printf '%s\n' "$EN_HITS" | grep -v '/index\.md:' || true)"
+
 # 00_* in en/ are working notes about the translation, not the Handbook
 # itself; counting them would report parity that the documents do not have.
 EN_HITS="$(printf '%s\n' "$EN_HITS" | grep -v '/00_' || true)"
