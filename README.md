@@ -78,8 +78,9 @@ home of Tier 3".)* One canonical source feeds everything derived from it, with a
    is wrong, and it is corrected *from* the Handbook, not the other way round.
 2. **After adoption, the Decision Log is canonical.** Each decision a Governance Meeting takes is
    logged, then applied to Notion; Notion is the live working copy of the structure.
-3. **The map and the validation sheets are generated from Notion** by a scheduled workflow
-   (`refresh-graph.yml`; its schedule says how often), and on demand with "Run workflow".
+3. **The map and the validation sheets are generated from Notion** by a scheduled workflow,
+   [`refresh-graph.yml`](.github/workflows/refresh-graph.yml): daily, and hourly in the run-up to
+   an all-staff session. It can also be run on demand with "Run workflow".
 
 So, for now, the Handbook's enumerated sections are **not** generated from Notion. That was the
 plan while Notion was presumed correct; a check on 2026-10-21 found most of the Handbook's
