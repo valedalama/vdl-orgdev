@@ -28,6 +28,14 @@ on:
       - 'handbook/en/*.md'
       - '!handbook/pt/index.md'
       - '!handbook/en/index.md'
+      # The .docx is a separate manual step (scripts/md2docx.py), so the push
+      # that brings a new document's .docx is usually a .docx-only push. The
+      # generator omits the download cell while the file is absent, and leans
+      # on this trigger to put the link back; without these two lines that push
+      # runs nothing and the cell stays empty until the next .md edit. Deleting
+      # a .docx empties the cell again by the same route. See issue #14.
+      - 'handbook/pt/*.docx'
+      - 'handbook/en/*.docx'
       - 'scripts/build-handbook-index.mjs'
       - '.github/workflows/handbook-index.yml'
   workflow_dispatch:           # "Run workflow", after a rename done outside these paths

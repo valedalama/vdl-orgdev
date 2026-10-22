@@ -94,7 +94,9 @@ function documents(lang) {
         // is true of this page but not of the .docx — so advertising a download
         // that 404s would make that instruction a trap. Omit the link until the
         // file is there; the push that brings the .docx regenerates this page
-        // and the link appears. See issue #14.
+        // and the link appears — which holds only because handbook-index.yml
+        // lists handbook/{pt,en}/*.docx in its trigger paths. Don't remove those
+        // two patterns without rewriting this comment. See issue #14.
         docx: existsSync(join(dir, `${slug}.docx`)),
       };
     })
