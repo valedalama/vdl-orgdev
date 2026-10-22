@@ -28,7 +28,7 @@
 // .github/workflows/handbook-index.yml regenerates and commits instead.
 // ═══════════════════════════════════════════════════════════════
 
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -82,11 +82,22 @@ function documents(lang) {
   const found = readdirSync(dir)
     .map((name) => ({ name, m: DOC.exec(name) }))
     .filter(({ m }) => m && m[1] !== "00")
-    .map(({ name, m }) => ({
-      num: m[1],
-      slug: name.replace(/\.md$/, ""),
-      title: titleOf(join(dir, name)),
-    }))
+    .map(({ name, m }) => {
+      const slug = name.replace(/\.md$/, "");
+      return {
+        num: m[1],
+        slug,
+        title: titleOf(join(dir, name)),
+        // The .docx is produced by a separate manual step (scripts/md2docx.py),
+        // so a document added by hand has none yet. handbook/README.md tells
+        // people to add a document and that nobody has to run anything, which
+        // is true of this page but not of the .docx — so advertising a download
+        // that 404s would make that instruction a trap. Omit the link until the
+        // file is there; the push that brings the .docx regenerates this page
+        // and the link appears. See issue #14.
+        docx: existsSync(join(dir, `${slug}.docx`)),
+      };
+    })
     .sort((a, b) => a.num.localeCompare(b.num));
   if (!found.length) throw new Error(`handbook/${lang}: no NN_*.md documents found`);
   return found;
@@ -118,8 +129,10 @@ const COPY = {
 
 function render(lang) {
   const c = COPY[lang];
+  // An empty third cell keeps the table's three columns when there is no .docx.
   const rows = documents(lang).map(
-    (d) => `| ${d.num} | [${d.title}](${d.slug}.html) | [.docx](${d.slug}.docx) |`,
+    (d) =>
+      `| ${d.num} | [${d.title}](${d.slug}.html) | ${d.docx ? `[.docx](${d.slug}.docx)` : ""} |`,
   );
   // No generated-on date anywhere: a date line would make this file
   // churn on every run and turn the commit log into noise.
