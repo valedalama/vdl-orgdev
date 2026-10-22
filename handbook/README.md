@@ -30,8 +30,10 @@ button opens the Portuguese one.
 
 **The contents pages look after themselves.** When a document is added, removed or retitled, the
 *Handbook contents pages* workflow rebuilds both pages and commits them within a minute or two of the
-push. Nobody runs anything. To add a document, name it `NN_Title.md` and put its title on the line
-after the banner, as the existing ten do.
+push. Nobody runs anything for the contents pages. To add a document, name it `NN_Title.md` and
+put its title on the line after the banner, as the existing ten do. Its row appears without a Word
+download until someone runs `scripts/md2docx.py` and pushes the `.docx`; the download link then
+appears on the next rebuild.
 
 **The Portuguese wins.** Where the two language sets disagree, the Portuguese is the governance
 document and the English is a translation of it.
