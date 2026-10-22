@@ -108,3 +108,15 @@ Install it once per clone:
 ```sh
 git config core.hooksPath .githooks
 ```
+
+### Merging a PR: merge commits only
+
+The repo allows **only** "Create a merge commit"; squash and rebase merging are switched off, and
+the branch is deleted automatically after the merge (decided by Walt 2026-10-22,
+valedalama/vdl-orgdev#14). Squash and rebase both rewrite the branch's commits, so the commit IDs
+the Worklist recorded stop being part of `main`'s history, and the local branch then needs
+`git branch -D` to remove. With a merge commit the recorded IDs stay on `main`, and the Coder's
+close-out is the normal `git checkout main && git pull && git branch -d <branch>`.
+
+This is a setting rather than a rule to remember, so the merge button cannot pick the wrong one. Do
+not turn squash back on for a noisy branch; tidy the branch before the PR instead.

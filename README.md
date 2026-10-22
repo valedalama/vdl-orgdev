@@ -1,9 +1,11 @@
 # vdl-orgdev
 
 The OrgDev system for **Quinta Vale da Lama, Lda.** — a Holacracy-derived governance implementation.
-Notion holds the structure; this repo holds everything else.
+The Handbook in this repo is the canonical record; Notion holds the live working copy of the
+structure, and the map is generated from Notion.
 
 **Live org map:** https://valedalama.github.io/vdl-orgdev/
+**The Handbook online:** [português](https://valedalama.github.io/vdl-orgdev/handbook/pt/) (definitive) · [English](https://valedalama.github.io/vdl-orgdev/handbook/en/) (translation)
 
 ---
 
@@ -17,7 +19,7 @@ door, not a translation of this one.
 |---|---|
 | New to the governance system | [`handbook/en/01_Who_We_Are_EN.md`](handbook/en/01_Who_We_Are_EN.md), then 03, 04 and the glossary in 09 |
 | A Circle Secretary | [`docs/en/secretary-manual.md`](docs/en/secretary-manual.md) — the working guide · [português](docs/pt/manual-do-secretario.md) (definitive) |
-| Looking for the Handbook | [`handbook/pt/`](handbook/pt/) (definitive) · [`handbook/en/`](handbook/en/) (translation) |
+| Looking for the Handbook | [português](https://valedalama.github.io/vdl-orgdev/handbook/pt/) (definitive) · [English](https://valedalama.github.io/vdl-orgdev/handbook/en/) (translation) — the contents pages; the sources are in [`handbook/`](handbook/) |
 | Administering Notion | [`docs/data-entry-sop.md`](docs/data-entry-sop.md), [`docs/admin-guide.md`](docs/admin-guide.md) |
 | Working on the code | the rest of this page |
 
@@ -57,7 +59,7 @@ is why it is now generated rather than maintained.
 | `docs/` | SOP, admin guide, backlog, schema context | written |
 | `docs/generated/` | Live Notion schema | **generated** |
 | `scripts/` | Build scripts and the validator | written |
-| `handbook/` | `.md` / `.docx` exports of the governance handbook (Tier 2 audit trail) | exported |
+| `handbook/` | The Governance Handbook. The `.md` files are the source; `.docx` and the contents pages are generated from them — see [`handbook/README.md`](handbook/README.md) | written (`.md`) · generated (the rest) |
 | `archive/` | Superseded material, kept for history — **not reference** | frozen |
 
 ## The three tiers
@@ -66,10 +68,22 @@ is why it is now generated rather than maintained.
 |---|---|---|---|
 | 1 — Constitution | Holacracy v5.0 + the Register of Adopted Variations | almost never | the Constitution |
 | 2 — Narrative | Purpose, Values, how we work, glossary | rarely, by a human | the handbook |
-| 3 — **Structure** | Circles, Roles, Domains, Accountabilities, Policies, assignments | **every Governance Meeting** | **Notion** |
+| 3 — **Structure** | Circles, Roles, Domains, Accountabilities, Policies, assignments | **every Governance Meeting** | **the Handbook** until it is adopted; then the Decision Log, applied to Notion |
 
-Tier 3 is the fast-moving layer and the only one with a machine-readable home. The map and the
-enumerated sections of the handbook are both generated from it.
+**Where the truth lives, and in what order.** *(Decided by Walt 2026-10-21, replacing "Notion is the
+home of Tier 3".)* One canonical source feeds everything derived from it, with as little delay as possible:
+
+1. **Until the Handbook is adopted, the Handbook is canonical for the structure too.** Docs 05–08 set
+   out each Circle's Purpose, Domains, Accountabilities and Policies. Where Notion disagrees, Notion
+   is wrong, and it is corrected *from* the Handbook, not the other way round.
+2. **After adoption, the Decision Log is canonical.** Each decision a Governance Meeting takes is
+   logged, then applied to Notion; Notion is the live working copy of the structure.
+3. **The map and the validation sheets are generated from Notion**, every hour through
+   2026-11-26 and daily otherwise, so they follow it within the hour.
+
+So, for now, the Handbook's enumerated sections are **not** generated from Notion. That was the
+plan while Notion was presumed correct; a check on 2026-10-21 found most of the Handbook's
+structural content missing from Notion.
 
 ## Credentials
 

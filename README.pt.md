@@ -24,8 +24,10 @@ Governança, o que se escreve no Registo de Decisões e onde se registam as alte
 Há uma versão inglesa em [`docs/en/secretary-manual.md`](docs/en/secretary-manual.md); a
 portuguesa é a que conta.
 
-**O Manual completo** está em **[`handbook/pt/`](handbook/pt/)** — dez documentos, do 01 ao 10.
-A versão inglesa está em [`handbook/en/`](handbook/en/).
+**O Manual completo** está em **https://valedalama.github.io/vdl-orgdev/handbook/pt/** — dez
+documentos, do 01 ao 10, para ler no navegador ou descarregar em Word. A versão inglesa está em
+https://valedalama.github.io/vdl-orgdev/handbook/en/. Os ficheiros-fonte estão em
+[`handbook/`](handbook/).
 
 **O mapa da organização** está em **https://valedalama.github.io/vdl-orgdev/** — gerado a partir do
 Notion. Leia primeiro o aviso na secção seguinte.

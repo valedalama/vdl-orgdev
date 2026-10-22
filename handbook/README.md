@@ -85,9 +85,10 @@ Making Markdown the source resolves that, and buys three things:
   Meeting and a change typed into GitHub are the same kind of change, reviewable the same way.
 - **Every format becomes an output.** `.docx` for people who want Word, `.pages` for Nita, `.pdf`
   for printing and circulation — all generated, never separately maintained.
-- **The enumerated sections can eventually be generated from Notion.** Domains, Accountabilities
-  and Policies live in Notion (Tier 3) and are hand-copied here today. That is the next drift
-  waiting to happen, and it can only be closed once the target is a text file.
+- **The Handbook can be the source for the structure, too.** Until it is adopted, the Domains,
+  Accountabilities and Policies in documents 05–08 are canonical, and Notion is corrected from
+  them, not the reverse (decided 2026-10-21; see the repository README, *The three tiers*). That
+  is only workable because the Handbook is a text file a script can read.
 
 ## The consequence, stated plainly
 
@@ -102,7 +103,8 @@ for it.
 
 ## What this is not
 
-It is **not** the structure. Circles, Roles, Domains, Accountabilities, Policies and who fills what
-live in Notion and change at every Governance Meeting — see the three tiers in the repository
-README. The Handbook is the narrative layer: Purpose, Values, how we work, the glossary, and the
-Policies the organisation has adopted.
+It is **not** the live record of who fills what. Role assignments change at every Governance
+Meeting and are kept in Notion. The Handbook is the narrative layer (Purpose, Values, how we work,
+the glossary) and, **until it is adopted, the canonical statement of the structure**: each
+Circle's Purpose, Domains, Accountabilities and Policies. After adoption, the Decision Log takes
+over that job. See the three tiers in the repository README.
